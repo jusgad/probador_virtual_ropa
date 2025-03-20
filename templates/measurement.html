@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toma de Medidas | Virtual Fitting Room</title>
+    <meta name="description" content="Mide tu cuerpo con precisión utilizando solo tu cámara para obtener recomendaciones personalizadas de tallas.">
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon">
+    
+    <!-- Hojas de estilo -->
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/measurement.css">
+    <link rel="stylesheet" href="/static/css/responsive.css">
+    
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+<body>
+    <!-- Overlay de carga -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Cargando...</p>
+    </div>
+    
+    <!-- Mensaje de error global -->
+    <div id="error-message" class="global-error-message">
+        Error al cargar la aplicación. Por favor, recarga la página.
+    </div>
+    
+    <!-- Cabecera -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="/">
+                        <img src="/static/img/logo.png" alt="Virtual Fitting Room Logo">
+                    </a>
+                </div>
+                
+                <nav class="main-nav">
+                    <button class="nav-toggle" aria-label="Abrir menú">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    
+                    <div class="nav-overlay"></div>
+                    
+                    <ul class="nav-items">
+                        <li><a href="/" class="nav-link" data-page="home">Inicio</a></li>
+                        <li><a href="/measurement" class="nav-link active" data-page="measurement">Medición</a></li>
+                        <li><a href="/fitting" class="nav-link" data-page="fitting">Prueba Virtual</a></li>
+                        <li><a href="/about" class="nav-link" data-page="about">Cómo Funciona</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="user-actions">
+                    <div class="user-profile" data-auth-required>
+                        <button id="user-profile-button" class="profile-button">
+                            <i class="fas fa-user-circle"></i>
+                            <span class="username">Usuario</span>
+                        </button>
+                        <div class="profile-dropdown">
+                            <ul>
+                                <li><a href="/profile">Mi Perfil</a></li>
+                                <li><a href="/measurements">Mis Medidas</a></li>
+                                <li><a href="/favorites">Favoritos</a></li>
+                                <li><a href="/logout">Cerrar Sesión</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="auth-buttons" data-auth-hidden>
+                        <a href="/login" class="btn btn-outline">Iniciar Sesión</a>
+                        <a href="/register" class="btn btn-primary">Registrarse</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Contenido principal -->
+    <main>
+        <div class="container">
+            <div class="measurement-container">
+                <!-- Título y descripción -->
+                <div class="page-header">
+                    <h1 class="measurement-title">Toma de Medidas</h1>
+                    <p class="measurement-subtitle">Utiliza tu cámara o sube fotos para obtener tus medidas exactas</p>
+                </div>
+                
+                <!-- El progreso será insertado por JavaScript -->
+                <!-- <div class="measurement-progress">...</div> -->
+                
+                <!-- Área principal de medición -->
+                <div class="measurement-capture-area">
+                    <!-- Área de vista previa de cámara/imagen -->
+                    <div class="capture-video-container">
+                        <!-- El video se muestra cuando la cámara está activa -->
+                        <video id="user-video" autoplay playsinline muted></video>
+                        
+                        <!-- Canvas para dibujar landmarks y visualizaciones -->
+                        <canvas id="detection-canvas"></canvas>
+                        
+                        <!-- Placeholder cuando no hay cámara -->
+                        <div class="capture-placeholder" id="camera-placeholder">
+                            <i class="fas fa-camera"></i>
+                            <p>Activa tu cámara o sube una foto para comenzar</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Panel de controles y ayuda -->
+                    <div class="capture-controls-panel">
+                        <!-- Controles de captura -->
+                        <div class="capture-controls">
+                            <button id="capture-button" class="capture-button">
+                                <i class="fas fa-camera"></i>
+                                Capturar
+                            </button>
+                            
+                            <button id="upload-button" class="capture-button upload-button">
+                                <i class="fas fa-upload"></i>
+                                Subir Imagen
+                            </button>
+                            
+                            <div class="control-options">
+                                <div class="toggle-container">
+                                    <label for="camera-toggle">Cámara:</label>
+                                    <div class="toggle-switch">
+                                        <input type="checkbox" id="camera-toggle" checked>
+                                        <span class="toggle-slider"></span>
+                                    </div>
+                                </div>
+                                
+                                <div class="toggle-container">
+                                    <label for="unit-toggle">Unidad:</label>
+                                    <select id="unit-toggle" class="unit-toggle">
+                                        <option value="cm" selected>cm</option>
+                                        <option value="in">pulgadas</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Instrucciones de medición -->
+                        <div id="measurement-instructions" class="measurement-instructions">
+                            <!-- Las instrucciones se insertarán por JavaScript -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Resultados de medición -->
+                <div id="measurement-results" class="measurement-results-container">
+                    <!-- Los resultados se insertarán por JavaScript -->
+                </div>
+                
+                <!-- Imágenes capturadas -->
+                <div class="captured-images">
+                    <h3>Imágenes Capturadas</h3>
+                    <div class="images-grid">
+                        <div class="image-container front-image">
+                            <h4>Vista Frontal</h4>
+                            <div class="image-preview" id="front-image-preview">
+                                <div class="no-image">
+                                    <i class="fas fa-user"></i>
+                                    <p>Esperando captura</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="image-container side-image">
+                            <h4>Vista Lateral</h4>
+                            <div class="image-preview" id="side-image-preview">
+                                <div class="no-image">
+                                    <i class="fas fa-user-profile"></i>
+                                    <p>Esperando captura</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Consejos adicionales -->
+                <div class="measurement-tips">
+                    <h3>Consejos para medidas precisas</h3>
+                    <div class="tips-grid">
+                        <div class="tip-item">
+                            <div class="tip-icon">
+                                <i class="fas fa-tshirt"></i>
+                            </div>
+                            <div class="tip-content">
+                                <h4>Usa ropa ajustada</h4>
+                                <p>Viste ropa ajustada o deportiva para obtener medidas más precisas.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="tip-item">
+                            <div class="tip-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div class="tip-content">
+                                <h4>Buena iluminación</h4>
+                                <p>Asegúrate de estar en un lugar bien iluminado, preferiblemente con luz natural.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="tip-item">
+                            <div class="tip-icon">
+                                <i class="fas fa-ruler-vertical"></i>
+                            </div>
+                            <div class="tip-content">
+                                <h4>Postura natural</h4>
+                                <p>Mantén una postura natural y relajada, sin contraer los músculos.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="tip-item">
+                            <div class="tip-icon">
+                                <i class="fas fa-expand-arrows-alt"></i>
+                            </div>
+                            <div class="tip-content">
+                                <h4>Distancia adecuada</h4>
+                                <p>Colócate a unos 2 metros de la cámara con todo tu cuerpo visible.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- FAQ -->
+                <div class="measurement-faq">
+                    <h3>Preguntas Frecuentes</h3>
+                    
+                    <div class="accordion">
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                ¿Qué hago si no tengo una cámara disponible?
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="accordion-content">
+                                <p>Puedes subir fotos tomadas previamente usando el botón "Subir Imagen". Asegúrate de tener una foto de frente y otra de perfil, con todo tu cuerpo visible.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                ¿Es seguro y privado este proceso?
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="accordion-content">
+                                <p>Sí, todo el procesamiento se realiza localmente en tu navegador. Las imágenes no se envían a nuestros servidores, solo almacenamos las medidas resultantes y solo si das tu consentimiento.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                ¿Qué tan precisas son las medidas?
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="accordion-content">
+                                <p>Nuestro sistema proporciona medidas con un margen de error de aproximadamente 2-3 cm, lo suficientemente preciso para recomendaciones de tallas. Puedes ajustar manualmente cualquier medida si lo necesitas.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="accordion-item">
+                            <button class="accordion-header">
+                                ¿Puedo editar mis medidas manualmente?
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="accordion-content">
+                                <p>Sí, una vez que se calculan tus medidas, puedes hacer clic en cualquier valor para editarlo manualmente y ajustarlo según tu conocimiento.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Acción final -->
+                <!-- Aquí no se incluyen los botones de acción porque se crean dinámicamente por JavaScript -->
+            </div>
+        </div>
+    </main>
+    
+    <!-- Pie de página -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <img src="/static/img/logo-white.png" alt="Virtual Fitting Room Logo">
+                    </div>
+                    <p>Tecnología avanzada para probarte ropa virtualmente y encontrar tu talla perfecta.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="/">Inicio</a></li>
+                        <li><a href="/measurement">Tomar Medidas</a></li>
+                        <li><a href="/fitting">Probar Ropa</a></li>
+                        <li><a href="/about">Cómo Funciona</a></li>
+                        <li><a href="/brands">Marcas Compatibles</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Soporte</h3>
+                    <ul class="footer-links">
+                        <li><a href="/faq">Preguntas Frecuentes</a></li>
+                        <li><a href="/contact">Contacto</a></li>
+                        <li><a href="/help">Ayuda</a></li>
+                        <li><a href="/privacy">Política de Privacidad</a></li>
+                        <li><a href="/terms">Términos de Uso</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contacto</h3>
+                    <address class="contact-info">
+                        <p><i class="fas fa-map-marker-alt"></i> Calle Principal 123, Ciudad</p>
+                        <p><i class="fas fa-phone-alt"></i> +34 912 345 678</p>
+                        <p><i class="fas fa-envelope"></i> info@virtualfitting.com</p>
+                    </address>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 Virtual Fitting Room. Todos los derechos reservados.</p>
+                <div class="language-selector">
+                    <select id="language-selector">
+                        <option value="es">Español</option>
+                        <option value="en">English</option>
+                        <option value="fr">Français</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="/static/js/app.js" type="module"></script>
+    <!-- El app.js importará los módulos bodyDetector.js y measurementUI.js -->
+</body>
+</html>

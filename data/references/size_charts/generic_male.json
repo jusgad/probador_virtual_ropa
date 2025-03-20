@@ -1,0 +1,352 @@
+{
+    "info": {
+      "name": "Generic Male Size Chart",
+      "type": "reference",
+      "updated": "2024-01-15",
+      "description": "Estándar de tallas genéricas para hombres que sirve como referencia cuando no se dispone de datos específicos de una marca"
+    },
+    "measurement_units": {
+      "primary": "cm",
+      "secondary": "inches",
+      "conversion_factor": 2.54
+    },
+    "body_types": {
+      "slim": {
+        "description": "Complexión delgada con hombros estrechos y poca diferencia entre pecho y cintura",
+        "waist_to_chest_ratio": 0.85,
+        "adjustment_factor": -1
+      },
+      "athletic": {
+        "description": "Complexión musculada con hombros anchos y cintura definida",
+        "waist_to_chest_ratio": 0.8,
+        "adjustment_factor": 0
+      },
+      "regular": {
+        "description": "Complexión intermedia con proporciones estándar",
+        "waist_to_chest_ratio": 0.9,
+        "adjustment_factor": 0
+      },
+      "full": {
+        "description": "Complexión robusta con menor diferencia entre pecho y cintura",
+        "waist_to_chest_ratio": 0.95,
+        "adjustment_factor": 1
+      }
+    },
+    "tops": {
+      "shirts": {
+        "measurement_points": ["chest", "waist", "neck", "sleeve_length", "shoulder_width"],
+        "size_chart": {
+          "XS": {
+            "chest": {"min": 84, "max": 89},
+            "waist": {"min": 70, "max": 75},
+            "neck": {"min": 35, "max": 36},
+            "sleeve_length": {"min": 61, "max": 62},
+            "shoulder_width": {"min": 41, "max": 42},
+            "us_size": "XS (34)",
+            "eu_size": "44"
+          },
+          "S": {
+            "chest": {"min": 90, "max": 96},
+            "waist": {"min": 76, "max": 82},
+            "neck": {"min": 37, "max": 38},
+            "sleeve_length": {"min": 63, "max": 64},
+            "shoulder_width": {"min": 43, "max": 44},
+            "us_size": "S (36-38)",
+            "eu_size": "46-48"
+          },
+          "M": {
+            "chest": {"min": 97, "max": 104},
+            "waist": {"min": 83, "max": 90},
+            "neck": {"min": 39, "max": 40},
+            "sleeve_length": {"min": 65, "max": 66},
+            "shoulder_width": {"min": 45, "max": 46},
+            "us_size": "M (40)",
+            "eu_size": "50"
+          },
+          "L": {
+            "chest": {"min": 105, "max": 112},
+            "waist": {"min": 91, "max": 98},
+            "neck": {"min": 41, "max": 42},
+            "sleeve_length": {"min": 67, "max": 68},
+            "shoulder_width": {"min": 47, "max": 48},
+            "us_size": "L (42-44)",
+            "eu_size": "52-54"
+          },
+          "XL": {
+            "chest": {"min": 113, "max": 120},
+            "waist": {"min": 99, "max": 106},
+            "neck": {"min": 43, "max": 44},
+            "sleeve_length": {"min": 69, "max": 70},
+            "shoulder_width": {"min": 49, "max": 50},
+            "us_size": "XL (46)",
+            "eu_size": "56"
+          },
+          "XXL": {
+            "chest": {"min": 121, "max": 128},
+            "waist": {"min": 107, "max": 114},
+            "neck": {"min": 45, "max": 46},
+            "sleeve_length": {"min": 71, "max": 72},
+            "shoulder_width": {"min": 51, "max": 52},
+            "us_size": "XXL (48-50)",
+            "eu_size": "58-60"
+          },
+          "3XL": {
+            "chest": {"min": 129, "max": 136},
+            "waist": {"min": 115, "max": 122},
+            "neck": {"min": 47, "max": 48},
+            "sleeve_length": {"min": 73, "max": 74},
+            "shoulder_width": {"min": 53, "max": 54},
+            "us_size": "3XL (52)",
+            "eu_size": "62"
+          }
+        },
+        "fit_types": {
+          "slim": {"chest": -2, "waist": -1},
+          "regular": {"chest": 0, "waist": 0},
+          "relaxed": {"chest": 2, "waist": 2}
+        }
+      },
+      "t_shirts": {
+        "measurement_points": ["chest", "waist", "shoulder_width"],
+        "size_chart": {
+          "XS": {
+            "chest": {"min": 84, "max": 89},
+            "waist": {"min": 70, "max": 75},
+            "shoulder_width": {"min": 41, "max": 42}
+          },
+          "S": {
+            "chest": {"min": 90, "max": 96},
+            "waist": {"min": 76, "max": 82},
+            "shoulder_width": {"min": 43, "max": 44}
+          },
+          "M": {
+            "chest": {"min": 97, "max": 104},
+            "waist": {"min": 83, "max": 90},
+            "shoulder_width": {"min": 45, "max": 46}
+          },
+          "L": {
+            "chest": {"min": 105, "max": 112},
+            "waist": {"min": 91, "max": 98},
+            "shoulder_width": {"min": 47, "max": 48}
+          },
+          "XL": {
+            "chest": {"min": 113, "max": 120},
+            "waist": {"min": 99, "max": 106},
+            "shoulder_width": {"min": 49, "max": 50}
+          },
+          "XXL": {
+            "chest": {"min": 121, "max": 128},
+            "waist": {"min": 107, "max": 114},
+            "shoulder_width": {"min": 51, "max": 52}
+          }
+        }
+      },
+      "jackets": {
+        "measurement_points": ["chest", "waist", "sleeve_length", "shoulder_width"],
+        "size_chart": {
+          "XS": {
+            "chest": {"min": 86, "max": 91},
+            "waist": {"min": 72, "max": 77},
+            "sleeve_length": {"min": 62, "max": 63},
+            "shoulder_width": {"min": 42, "max": 43}
+          },
+          "S": {
+            "chest": {"min": 92, "max": 98},
+            "waist": {"min": 78, "max": 84},
+            "sleeve_length": {"min": 64, "max": 65},
+            "shoulder_width": {"min": 44, "max": 45}
+          },
+          "M": {
+            "chest": {"min": 99, "max": 106},
+            "waist": {"min": 85, "max": 92},
+            "sleeve_length": {"min": 66, "max": 67},
+            "shoulder_width": {"min": 46, "max": 47}
+          },
+          "L": {
+            "chest": {"min": 107, "max": 114},
+            "waist": {"min": 93, "max": 100},
+            "sleeve_length": {"min": 68, "max": 69},
+            "shoulder_width": {"min": 48, "max": 49}
+          },
+          "XL": {
+            "chest": {"min": 115, "max": 122},
+            "waist": {"min": 101, "max": 108},
+            "sleeve_length": {"min": 70, "max": 71},
+            "shoulder_width": {"min": 50, "max": 51}
+          },
+          "XXL": {
+            "chest": {"min": 123, "max": 130},
+            "waist": {"min": 109, "max": 116},
+            "sleeve_length": {"min": 72, "max": 73},
+            "shoulder_width": {"min": 52, "max": 53}
+          }
+        }
+      }
+    },
+    "bottoms": {
+      "pants": {
+        "measurement_points": ["waist", "hip", "inseam", "thigh"],
+        "size_chart": {
+          "28": {
+            "waist": {"min": 71, "max": 73},
+            "hip": {"min": 88, "max": 90},
+            "inseam": {"min": 79, "max": 81},
+            "thigh": {"min": 52, "max": 54},
+            "eu_size": "44"
+          },
+          "30": {
+            "waist": {"min": 76, "max": 78},
+            "hip": {"min": 93, "max": 95},
+            "inseam": {"min": 80, "max": 82},
+            "thigh": {"min": 55, "max": 57},
+            "eu_size": "46"
+          },
+          "32": {
+            "waist": {"min": 81, "max": 83},
+            "hip": {"min": 98, "max": 100},
+            "inseam": {"min": 81, "max": 83},
+            "thigh": {"min": 58, "max": 60},
+            "eu_size": "48"
+          },
+          "34": {
+            "waist": {"min": 86, "max": 88},
+            "hip": {"min": 103, "max": 105},
+            "inseam": {"min": 82, "max": 84},
+            "thigh": {"min": 61, "max": 63},
+            "eu_size": "50"
+          },
+          "36": {
+            "waist": {"min": 91, "max": 93},
+            "hip": {"min": 108, "max": 110},
+            "inseam": {"min": 83, "max": 85},
+            "thigh": {"min": 64, "max": 66},
+            "eu_size": "52"
+          },
+          "38": {
+            "waist": {"min": 96, "max": 98},
+            "hip": {"min": 113, "max": 115},
+            "inseam": {"min": 84, "max": 86},
+            "thigh": {"min": 67, "max": 69},
+            "eu_size": "54"
+          },
+          "40": {
+            "waist": {"min": 101, "max": 103},
+            "hip": {"min": 118, "max": 120},
+            "inseam": {"min": 85, "max": 87},
+            "thigh": {"min": 70, "max": 72},
+            "eu_size": "56"
+          },
+          "42": {
+            "waist": {"min": 106, "max": 108},
+            "hip": {"min": 123, "max": 125},
+            "inseam": {"min": 86, "max": 88},
+            "thigh": {"min": 73, "max": 75},
+            "eu_size": "58"
+          }
+        },
+        "inseam_options": {
+          "short": {"adjustment": -5},
+          "regular": {"adjustment": 0},
+          "long": {"adjustment": 5}
+        },
+        "fit_types": {
+          "skinny": {"hip": -2, "thigh": -4},
+          "slim": {"hip": -1, "thigh": -2},
+          "regular": {"hip": 0, "thigh": 0},
+          "relaxed": {"hip": 1, "thigh": 2},
+          "loose": {"hip": 2, "thigh": 4}
+        }
+      },
+      "shorts": {
+        "measurement_points": ["waist", "hip", "thigh", "inseam"],
+        "size_chart": {
+          "28": {
+            "waist": {"min": 71, "max": 73},
+            "hip": {"min": 88, "max": 90},
+            "thigh": {"min": 52, "max": 54}
+          },
+          "30": {
+            "waist": {"min": 76, "max": 78},
+            "hip": {"min": 93, "max": 95},
+            "thigh": {"min": 55, "max": 57}
+          },
+          "32": {
+            "waist": {"min": 81, "max": 83},
+            "hip": {"min": 98, "max": 100},
+            "thigh": {"min": 58, "max": 60}
+          },
+          "34": {
+            "waist": {"min": 86, "max": 88},
+            "hip": {"min": 103, "max": 105},
+            "thigh": {"min": 61, "max": 63}
+          },
+          "36": {
+            "waist": {"min": 91, "max": 93},
+            "hip": {"min": 108, "max": 110},
+            "thigh": {"min": 64, "max": 66}
+          },
+          "38": {
+            "waist": {"min": 96, "max": 98},
+            "hip": {"min": 113, "max": 115},
+            "thigh": {"min": 67, "max": 69}
+          },
+          "40": {
+            "waist": {"min": 101, "max": 103},
+            "hip": {"min": 118, "max": 120},
+            "thigh": {"min": 70, "max": 72}
+          }
+        },
+        "length_options": {
+          "short": {"inseam": 13},
+          "regular": {"inseam": 18},
+          "long": {"inseam": 23}
+        }
+      }
+    },
+    "height_ranges": {
+      "short": {"min": 160, "max": 172, "adjustment_factor": -1},
+      "regular": {"min": 173, "max": 185, "adjustment_factor": 0},
+      "tall": {"min": 186, "max": 200, "adjustment_factor": 1}
+    },
+    "weight_distribution": {
+      "apple": {
+        "description": "Mayor peso concentrado en la parte superior del cuerpo y abdomen",
+        "adjustments": {"waist": 1, "chest": 0.5, "hip": -0.5}
+      },
+      "pear": {
+        "description": "Mayor peso concentrado en la parte inferior del cuerpo",
+        "adjustments": {"waist": 0, "chest": -0.5, "hip": 1}
+      },
+      "hourglass": {
+        "description": "Proporciones equilibradas entre parte superior e inferior",
+        "adjustments": {"waist": -0.5, "chest": 0, "hip": 0}
+      },
+      "rectangle": {
+        "description": "Distribución uniforme del peso",
+        "adjustments": {"waist": 0, "chest": 0, "hip": 0}
+      }
+    },
+    "age_adjustments": {
+      "18-30": {"factor": 0},
+      "31-45": {"factor": 0.5},
+      "46-60": {"factor": 1},
+      "60+": {"factor": 1.5}
+    },
+    "recommended_ease": {
+      "formal_shirts": 5,
+      "casual_shirts": 7,
+      "t_shirts": 6,
+      "pants": 3,
+      "jeans": 2,
+      "jackets": 10,
+      "coats": 12
+    },
+    "notes": [
+      "Estas son medidas genéricas y pueden variar ligeramente según el fabricante",
+      "Las medidas están en centímetros a menos que se indique lo contrario",
+      "Para prendas superiores, medir el pecho en la parte más ancha",
+      "Para pantalones, medir la cintura natural donde normalmente se usa el pantalón",
+      "La altura del usuario puede afectar la talla recomendada, especialmente para la longitud de mangas y piernas",
+      "Si está entre tallas, se recomienda elegir la talla mayor para mayor comodidad"
+    ]
+  }

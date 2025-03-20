@@ -1,0 +1,89 @@
+{
+    "model_info": {
+      "name": "PoseEstimationModel",
+      "version": "1.0.0",
+      "description": "Modelo para detectar puntos clave de pose humana",
+      "framework": "TensorFlow",
+      "input_size": [256, 256],
+      "output_format": "landmarks"
+    },
+    "landmark_config": {
+      "num_landmarks": 33,
+      "confidence_threshold": 0.5,
+      "connection_threshold": 0.5,
+      "use_tracking": true,
+      "min_tracking_confidence": 0.7,
+      "landmark_names": [
+        "nose",
+        "left_eye_inner", "left_eye", "left_eye_outer",
+        "right_eye_inner", "right_eye", "right_eye_outer",
+        "left_ear", "right_ear",
+        "mouth_left", "mouth_right",
+        "left_shoulder", "right_shoulder",
+        "left_elbow", "right_elbow",
+        "left_wrist", "right_wrist",
+        "left_pinky", "right_pinky",
+        "left_index", "right_index",
+        "left_thumb", "right_thumb",
+        "left_hip", "right_hip",
+        "left_knee", "right_knee",
+        "left_ankle", "right_ankle",
+        "left_heel", "right_heel",
+        "left_foot_index", "right_foot_index"
+      ]
+    },
+    "inference_config": {
+      "device": "auto",  
+      "num_threads": 4,
+      "enable_acceleration": true,
+      "batch_size": 1
+    },
+    "measurement_config": {
+      "key_measurements": [
+        {
+          "name": "height",
+          "landmarks": ["left_ankle", "nose"],
+          "multiplier": 1.03 
+        },
+        {
+          "name": "shoulder_width",
+          "landmarks": ["left_shoulder", "right_shoulder"],
+          "multiplier": 1.0
+        },
+        {
+          "name": "chest_circumference",
+          "calculation": "complex",
+          "landmarks": ["left_shoulder", "right_shoulder", "left_hip", "right_hip"],
+          "formula": "chest_estimation_algorithm"
+        },
+        {
+          "name": "waist_circumference",
+          "calculation": "complex",
+          "landmarks": ["left_hip", "right_hip"],
+          "formula": "waist_estimation_algorithm"
+        },
+        {
+          "name": "hip_circumference",
+          "calculation": "complex",
+          "landmarks": ["left_hip", "right_hip"],
+          "formula": "hip_estimation_algorithm"
+        },
+        {
+          "name": "inseam",
+          "landmarks": ["left_hip", "left_ankle"],
+          "multiplier": 0.98
+        }
+      ]
+    },
+    "visualization": {
+      "landmark_radius": 5,
+      "landmark_color": [0, 255, 0],
+      "connection_width": 2,
+      "connection_color": [0, 0, 255],
+      "text_size": 0.5,
+      "text_color": [255, 0, 0],
+      "show_labels": true,
+      "show_connections": true,
+      "show_confidence": false
+    }
+  }

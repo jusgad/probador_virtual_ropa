@@ -1,0 +1,40 @@
+{
+    "app": {
+      "debug": false,
+      "host": "0.0.0.0",
+      "port": 5000
+    },
+    "camera": {
+      "device_id": 0,
+      "width": 640,
+      "height": 480,
+      "fps": 30
+    },
+    "body_detection": {
+      "model_complexity": 2,
+      "min_detection_confidence": 0.5,
+      "min_tracking_confidence": 0.5,
+      "enable_segmentation": true
+    },
+    "measurement": {
+      "reference_height_cm": 170.0,
+      "calibration_factor": 1.0
+    },
+    "clothing": {
+      "default_width_scale": 0.6,
+      "default_height_scale": 0.6,
+      "default_x_offset": 0,
+      "default_y_offset": 0,
+      "default_rotation": 0
+    },
+    "paths": {
+      "clothes_dir": "data/clothes",
+      "models_dir": "models",
+      "user_data_dir": "data/users",
+      "results_dir": "static/results"
+    },
+    "database": {
+      "type": "sqlite",
+      "path": "data/db/measurements.db"
+    }
+  }

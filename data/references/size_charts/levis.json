@@ -1,0 +1,351 @@
+{
+    "brand": "Levi's",
+    "updated": "2024-05-20",
+    "source": "Official Levi's Size Charts",
+    "gender_categories": {
+      "men": {
+        "jeans": {
+          "unit": "inches",
+          "measurement_points": ["waist", "hip", "inseam"],
+          "fit_types": ["skinny", "slim", "straight", "relaxed", "loose"],
+          "sizes": {
+            "28x30": {
+              "waist": {"min": 27.5, "max": 28.5},
+              "hip": {"min": 34, "max": 35},
+              "inseam": {"min": 29.5, "max": 30.5}
+            },
+            "28x32": {
+              "waist": {"min": 27.5, "max": 28.5},
+              "hip": {"min": 34, "max": 35},
+              "inseam": {"min": 31.5, "max": 32.5}
+            },
+            "30x30": {
+              "waist": {"min": 29.5, "max": 30.5},
+              "hip": {"min": 36, "max": 37},
+              "inseam": {"min": 29.5, "max": 30.5}
+            },
+            "30x32": {
+              "waist": {"min": 29.5, "max": 30.5},
+              "hip": {"min": 36, "max": 37},
+              "inseam": {"min": 31.5, "max": 32.5}
+            },
+            "30x34": {
+              "waist": {"min": 29.5, "max": 30.5},
+              "hip": {"min": 36, "max": 37},
+              "inseam": {"min": 33.5, "max": 34.5}
+            },
+            "32x30": {
+              "waist": {"min": 31.5, "max": 32.5},
+              "hip": {"min": 38, "max": 39},
+              "inseam": {"min": 29.5, "max": 30.5}
+            },
+            "32x32": {
+              "waist": {"min": 31.5, "max": 32.5},
+              "hip": {"min": 38, "max": 39},
+              "inseam": {"min": 31.5, "max": 32.5}
+            },
+            "32x34": {
+              "waist": {"min": 31.5, "max": 32.5},
+              "hip": {"min": 38, "max": 39},
+              "inseam": {"min": 33.5, "max": 34.5}
+            },
+            "34x30": {
+              "waist": {"min": 33.5, "max": 34.5},
+              "hip": {"min": 40, "max": 41},
+              "inseam": {"min": 29.5, "max": 30.5}
+            },
+            "34x32": {
+              "waist": {"min": 33.5, "max": 34.5},
+              "hip": {"min": 40, "max": 41},
+              "inseam": {"min": 31.5, "max": 32.5}
+            },
+            "34x34": {
+              "waist": {"min": 33.5, "max": 34.5},
+              "hip": {"min": 40, "max": 41},
+              "inseam": {"min": 33.5, "max": 34.5}
+            },
+            "36x30": {
+              "waist": {"min": 35.5, "max": 36.5},
+              "hip": {"min": 42, "max": 43},
+              "inseam": {"min": 29.5, "max": 30.5}
+            },
+            "36x32": {
+              "waist": {"min": 35.5, "max": 36.5},
+              "hip": {"min": 42, "max": 43},
+              "inseam": {"min": 31.5, "max": 32.5}
+            },
+            "36x34": {
+              "waist": {"min": 35.5, "max": 36.5},
+              "hip": {"min": 42, "max": 43},
+              "inseam": {"min": 33.5, "max": 34.5}
+            },
+            "38x30": {
+              "waist": {"min": 37.5, "max": 38.5},
+              "hip": {"min": 44, "max": 45},
+              "inseam": {"min": 29.5, "max": 30.5}
+            },
+            "38x32": {
+              "waist": {"min": 37.5, "max": 38.5},
+              "hip": {"min": 44, "max": 45},
+              "inseam": {"min": 31.5, "max": 32.5}
+            },
+            "38x34": {
+              "waist": {"min": 37.5, "max": 38.5},
+              "hip": {"min": 44, "max": 45},
+              "inseam": {"min": 33.5, "max": 34.5}
+            },
+            "40x30": {
+              "waist": {"min": 39.5, "max": 40.5},
+              "hip": {"min": 46, "max": 47},
+              "inseam": {"min": 29.5, "max": 30.5}
+            },
+            "40x32": {
+              "waist": {"min": 39.5, "max": 40.5},
+              "hip": {"min": 46, "max": 47},
+              "inseam": {"min": 31.5, "max": 32.5}
+            },
+            "42x30": {
+              "waist": {"min": 41.5, "max": 42.5},
+              "hip": {"min": 48, "max": 49},
+              "inseam": {"min": 29.5, "max": 30.5}
+            },
+            "42x32": {
+              "waist": {"min": 41.5, "max": 42.5},
+              "hip": {"min": 48, "max": 49},
+              "inseam": {"min": 31.5, "max": 32.5}
+            }
+          },
+          "fit_adjustments": {
+            "skinny": {"waist": 0, "hip": -0.5, "thigh": -1},
+            "slim": {"waist": 0, "hip": -0.25, "thigh": -0.5},
+            "straight": {"waist": 0, "hip": 0, "thigh": 0},
+            "relaxed": {"waist": 0, "hip": 0.5, "thigh": 0.75},
+            "loose": {"waist": 0, "hip": 1, "thigh": 1.5}
+          }
+        },
+        "tops": {
+          "unit": "inches",
+          "measurement_points": ["chest", "waist", "sleeve"],
+          "sizes": {
+            "XS": {
+              "chest": {"min": 33, "max": 35},
+              "waist": {"min": 27, "max": 29},
+              "sleeve": {"min": 31, "max": 32}
+            },
+            "S": {
+              "chest": {"min": 36, "max": 38},
+              "waist": {"min": 30, "max": 32},
+              "sleeve": {"min": 32, "max": 33}
+            },
+            "M": {
+              "chest": {"min": 39, "max": 41},
+              "waist": {"min": 33, "max": 35},
+              "sleeve": {"min": 33, "max": 34}
+            },
+            "L": {
+              "chest": {"min": 42, "max": 44},
+              "waist": {"min": 36, "max": 38},
+              "sleeve": {"min": 34, "max": 35}
+            },
+            "XL": {
+              "chest": {"min": 45, "max": 47},
+              "waist": {"min": 39, "max": 41},
+              "sleeve": {"min": 35, "max": 36}
+            },
+            "XXL": {
+              "chest": {"min": 48, "max": 50},
+              "waist": {"min": 42, "max": 44},
+              "sleeve": {"min": 36, "max": 37}
+            }
+          }
+        }
+      },
+      "women": {
+        "jeans": {
+          "unit": "inches",
+          "measurement_points": ["waist", "hip", "inseam"],
+          "fit_types": ["skinny", "slim", "straight", "bootcut", "wide leg"],
+          "sizes": {
+            "24": {
+              "waist": {"min": 23.5, "max": 24.5},
+              "hip": {"min": 33, "max": 34},
+              "inseam_short": {"min": 28, "max": 29},
+              "inseam_regular": {"min": 30, "max": 31},
+              "inseam_long": {"min": 32, "max": 33}
+            },
+            "25": {
+              "waist": {"min": 24.5, "max": 25.5},
+              "hip": {"min": 34, "max": 35},
+              "inseam_short": {"min": 28, "max": 29},
+              "inseam_regular": {"min": 30, "max": 31},
+              "inseam_long": {"min": 32, "max": 33}
+            },
+            "26": {
+              "waist": {"min": 25.5, "max": 26.5},
+              "hip": {"min": 35, "max": 36},
+              "inseam_short": {"min": 28, "max": 29},
+              "inseam_regular": {"min": 30, "max": 31},
+              "inseam_long": {"min": 32, "max": 33}
+            },
+            "27": {
+              "waist": {"min": 26.5, "max": 27.5},
+              "hip": {"min": 36, "max": 37},
+              "inseam_short": {"min": 28, "max": 29},
+              "inseam_regular": {"min": 30, "max": 31},
+              "inseam_long": {"min": 32, "max": 33}
+            },
+            "28": {
+              "waist": {"min": 27.5, "max": 28.5},
+              "hip": {"min": 37, "max": 38},
+              "inseam_short": {"min": 28, "max": 29},
+              "inseam_regular": {"min": 30, "max": 31},
+              "inseam_long": {"min": 32, "max": 33}
+            },
+            "29": {
+              "waist": {"min": 28.5, "max": 29.5},
+              "hip": {"min": 38, "max": 39},
+              "inseam_short": {"min": 28, "max": 29},
+              "inseam_regular": {"min": 30, "max": 31},
+              "inseam_long": {"min": 32, "max": 33}
+            },
+            "30": {
+              "waist": {"min": 29.5, "max": 30.5},
+              "hip": {"min": 39, "max": 40},
+              "inseam_short": {"min": 28, "max": 29},
+              "inseam_regular": {"min": 30, "max": 31},
+              "inseam_long": {"min": 32, "max": 33}
+            },
+            "31": {
+              "waist": {"min": 30.5, "max": 31.5},
+              "hip": {"min": 40, "max": 41},
+              "inseam_short": {"min": 28, "max": 29},
+              "inseam_regular": {"min": 30, "max": 31},
+              "inseam_long": {"min": 32, "max": 33}
+            },
+            "32": {
+              "waist": {"min": 31.5, "max": 32.5},
+              "hip": {"min": 41, "max": 42},
+              "inseam_short": {"min": 28, "max": 29},
+              "inseam_regular": {"min": 30, "max": 31},
+              "inseam_long": {"min": 32, "max": 33}
+            },
+            "33": {
+              "waist": {"min": 32.5, "max": 33.5},
+              "hip": {"min": 42, "max": 43},
+              "inseam_short": {"min": 28, "max": 29},
+              "inseam_regular": {"min": 30, "max": 31},
+              "inseam_long": {"min": 32, "max": 33}
+            },
+            "34": {
+              "waist": {"min": 33.5, "max": 34.5},
+              "hip": {"min": 43, "max": 44},
+              "inseam_short": {"min": 28, "max": 29},
+              "inseam_regular": {"min": 30, "max": 31},
+              "inseam_long": {"min": 32, "max": 33}
+            }
+          },
+          "fit_adjustments": {
+            "skinny": {"waist": 0, "hip": -0.5, "thigh": -1},
+            "slim": {"waist": 0, "hip": -0.25, "thigh": -0.5},
+            "straight": {"waist": 0, "hip": 0, "thigh": 0},
+            "bootcut": {"waist": 0, "hip": 0, "thigh": 0, "calf": 0.5, "ankle": 1},
+            "wide leg": {"waist": 0, "hip": 0.25, "thigh": 0.5, "calf": 1.5, "ankle": 2}
+          }
+        },
+        "tops": {
+          "unit": "inches",
+          "measurement_points": ["bust", "waist", "hip"],
+          "sizes": {
+            "XS": {
+              "bust": {"min": 31, "max": 33},
+              "waist": {"min": 24, "max": 26},
+              "hip": {"min": 33, "max": 35}
+            },
+            "S": {
+              "bust": {"min": 34, "max": 36},
+              "waist": {"min": 27, "max": 29},
+              "hip": {"min": 36, "max": 38}
+            },
+            "M": {
+              "bust": {"min": 37, "max": 39},
+              "waist": {"min": 30, "max": 32},
+              "hip": {"min": 39, "max": 41}
+            },
+            "L": {
+              "bust": {"min": 40, "max": 42},
+              "waist": {"min": 33, "max": 35},
+              "hip": {"min": 42, "max": 44}
+            },
+            "XL": {
+              "bust": {"min": 43, "max": 45},
+              "waist": {"min": 36, "max": 38},
+              "hip": {"min": 45, "max": 47}
+            },
+            "XXL": {
+              "bust": {"min": 46, "max": 48},
+              "waist": {"min": 39, "max": 41},
+              "hip": {"min": 48, "max": 50}
+            }
+          }
+        }
+      }
+    },
+    "conversion": {
+      "women_waist_to_letter": {
+        "24-25": "XS",
+        "26-27": "S",
+        "28-29": "M",
+        "30-31": "L",
+        "32-33": "XL",
+        "34-36": "XXL"
+      },
+      "women_waist_to_number": {
+        "24": "00",
+        "25": "0",
+        "26": "2",
+        "27": "4",
+        "28": "6",
+        "29": "8",
+        "30": "10",
+        "31": "12",
+        "32": "14",
+        "33": "16",
+        "34": "18"
+      },
+      "men_waist_inches_to_eu": {
+        "28": "44",
+        "30": "46",
+        "32": "48",
+        "34": "50",
+        "36": "52",
+        "38": "54",
+        "40": "56",
+        "42": "58"
+      }
+    },
+    "stretch_factors": {
+      "standard_denim": 1.0,
+      "stretch_denim": 1.05,
+      "super_stretch": 1.1,
+      "rigid_denim": 0.95
+    },
+    "shrinkage_factors": {
+      "pre_shrunk": 1.0,
+      "raw_denim": 0.98,
+      "sanforized": 0.99
+    },
+    "product_specific_adjustments": {
+      "501": {"waist": 0, "hip": 0.5, "note": "Iconic straight fit, sits at waist"},
+      "511": {"waist": -0.5, "hip": -0.5, "note": "Slim fit, sits below waist"},
+      "711": {"waist": -0.5, "hip": -0.25, "note": "Women's skinny, mid rise"},
+      "721": {"waist": -1, "hip": -0.5, "note": "Women's high rise skinny"}
+    },
+    "special_notes": [
+      "Levi's denim tends to stretch with wear, consider sizing down if between sizes",
+      "Raw denim will shrink when first washed, even if pre-shrunk",
+      "Women's sizes follow waist measurements in inches",
+      "Measure your natural waist at the narrowest point",
+      "For accurate inseam, measure from crotch to desired length",
+      "Different Levi's models have slightly different fits in the same size"
+    ]
+  }

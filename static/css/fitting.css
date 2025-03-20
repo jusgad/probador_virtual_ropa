@@ -1,0 +1,508 @@
+/* ==========================================================================
+   Virtual Fitting - Fitting Room Styles
+   Copyright 2024 - Virtual Fitting App
+   ========================================================================== */
+
+/* ===== Fitting Room Layout ===== */
+.fitting-container {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: var(--spacing-xl);
+    padding-top: calc(var(--header-height) + var(--spacing-xl));
+    min-height: calc(100vh - var(--header-height));
+  }
+  
+  .fitting-sidebar {
+    background-color: var(--neutral-100);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-lg);
+    height: calc(100vh - var(--header-height) - var(--spacing-2xl));
+    position: sticky;
+    top: calc(var(--header-height) + var(--spacing-xl));
+    overflow-y: auto;
+  }
+  
+  .fitting-main {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .fitting-view {
+    background-color: var(--neutral-100);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    min-height: 600px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  
+  /* ===== Clothing Selection ===== */
+  .clothing-categories {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .category-title {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+    color: var(--neutral-800);
+  }
+  
+  .category-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--neutral-300);
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .category-tab {
+    padding: var(--spacing-sm) var(--spacing-md);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--neutral-600);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all var(--transition-quick);
+  }
+  
+  .category-tab:hover {
+    color: var(--primary-color);
+  }
+  
+  .category-tab.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+  }
+  
+  .clothing-items {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-sm);
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: var(--spacing-sm);
+  }
+  
+  .clothing-item {
+    background-color: var(--neutral-200);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-sm);
+    cursor: pointer;
+    transition: all var(--transition-quick);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .clothing-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .clothing-item.selected {
+    border: 2px solid var(--primary-color);
+  }
+  
+  .clothing-image {
+    width: 100%;
+    height: 120px;
+    object-fit: contain;
+    background-color: var(--neutral-100);
+    border-radius: var(--border-radius-sm);
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .clothing-info {
+    font-size: var(--font-size-xs);
+  }
+  
+  .clothing-name {
+    font-weight: 500;
+    margin-bottom: var(--spacing-xs);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .clothing-size, .clothing-color {
+    display: flex;
+    align-items: center;
+    color: var(--neutral-700);
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .clothing-size span, .clothing-color span {
+    margin-left: var(--spacing-xs);
+  }
+  
+  .color-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid var(--neutral-300);
+  }
+  
+  /* ===== Size Selection ===== */
+  .size-selection {
+    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .size-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-sm);
+  }
+  
+  .size-option {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius-sm);
+    border: 1px solid var(--neutral-400);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-quick);
+  }
+  
+  .size-option:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+  }
+  
+  .size-option.selected {
+    background-color: var(--primary-color);
+    color: var(--neutral-100);
+    border-color: var(--primary-color);
+  }
+  
+  .size-option.recommended {
+    position: relative;
+  }
+  
+  .size-option.recommended::after {
+    content: "";
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 10px;
+    height: 10px;
+    background-color: var(--success);
+    border-radius: 50%;
+    border: 2px solid var(--neutral-100);
+  }
+  
+  .size-fit-status {
+    display: flex;
+    align-items: center;
+    margin-top: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+  }
+  
+  .size-fit-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: var(--spacing-xs);
+  }
+  
+  .fit-perfect {
+    background-color: var(--success);
+  }
+  
+  .fit-good {
+    background-color: var(--primary-color);
+  }
+  
+  .fit-loose {
+    background-color: var(--warning);
+  }
+  
+  .fit-tight {
+    background-color: var(--error);
+  }
+  
+  /* ===== Fitting View Controls ===== */
+  .fitting-controls {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    background-color: var(--neutral-200);
+    border-radius: var(--border-radius-md);
+  }
+  
+  .control-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--neutral-100);
+    color: var(--neutral-700);
+    border: 1px solid var(--neutral-300);
+    cursor: pointer;
+    transition: all var(--transition-quick);
+  }
+  
+  .control-button:hover {
+    background-color: var(--primary-light);
+    color: var(--neutral-100);
+    border-color: var(--primary-light);
+  }
+  
+  .control-button svg {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .zoom-slider {
+    width: 150px;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+  }
+  
+  .zoom-slider input[type="range"] {
+    flex: 1;
+    height: 4px;
+    background-color: var(--neutral-400);
+    border-radius: var(--border-radius-full);
+    appearance: none;
+    outline: none;
+  }
+  
+  .zoom-slider input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  /* ===== Virtual Model Display ===== */
+  .virtual-model {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .model-container {
+    position: relative;
+    height: 100%;
+    max-height: 600px;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .model-image {
+    height: 100%;
+    max-height: 600px;
+    object-fit: contain;
+  }
+  
+  .clothing-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  
+  .measurement-points {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .measurement-point {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    border: 1px solid var(--neutral-100);
+    transform: translate(-50%, -50%);
+  }
+  
+  .measurement-line {
+    position: absolute;
+    background-color: var(--primary-color);
+    height: 2px;
+    transform-origin: left center;
+  }
+  
+  .measurement-label {
+    position: absolute;
+    background-color: var(--neutral-800);
+    color: var(--neutral-100);
+    padding: 2px 6px;
+    border-radius: var(--border-radius-sm);
+    font-size: var(--font-size-xs);
+    transform: translate(-50%, -100%);
+    margin-top: -5px;
+    white-space: nowrap;
+  }
+  
+  /* ===== Size Recommendation Panel ===== */
+  .size-recommendation {
+    margin-top: var(--spacing-lg);
+    background-color: var(--neutral-200);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-md);
+  }
+  
+  .recommendation-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  .recommendation-icon {
+    color: var(--success);
+  }
+  
+  .recommendation-title {
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  .recommendation-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+  }
+  
+  .recommendation-measurement {
+    background-color: var(--neutral-100);
+    border-radius: var(--border-radius-sm);
+    padding: var(--spacing-sm);
+  }
+  
+  .measurement-name {
+    font-size: var(--font-size-xs);
+    color: var(--neutral-600);
+    margin-bottom: var(--spacing-xs);
+  }
+  
+  .measurement-value {
+    font-size: var(--font-size-md);
+    font-weight: 500;
+  }
+  
+  .measurement-diff {
+    font-size: var(--font-size-xs);
+    margin-top: var(--spacing-xs);
+  }
+  
+  .diff-positive {
+    color: var(--success);
+  }
+  
+  .diff-negative {
+    color: var(--error);
+  }
+  
+  .diff-neutral {
+    color: var(--neutral-600);
+  }
+  
+  /* ===== Comparison View ===== */
+  .comparison-view {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+  }
+  
+  .comparison-item {
+    background-color: var(--neutral-100);
+    border-radius: var(--border-radius-md);
+    padding: var(--spacing-md);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .comparison-title {
+    font-size: var(--font-size-md);
+    font-weight: 600;
+    margin-bottom: var(--spacing-md);
+    text-align: center;
+  }
+  
+  .comparison-image {
+    width: 100%;
+    height: 300px;
+    object-fit: contain;
+    background-color: var(--neutral-200);
+    border-radius: var(--border-radius-sm);
+    margin-bottom: var(--spacing-sm);
+  }
+  
+  /* ===== Mobile Responsive Styles ===== */
+  @media (max-width: 992px) {
+    .fitting-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .fitting-sidebar {
+      position: relative;
+      top: 0;
+      height: auto;
+      max-height: none;
+      margin-bottom: var(--spacing-lg);
+    }
+    
+    .clothing-items {
+      grid-template-columns: repeat(3, 1fr);
+      max-height: none;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .clothing-items {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .comparison-view {
+      grid-template-columns: 1fr;
+    }
+    
+    .fitting-controls {
+      flex-wrap: wrap;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .clothing-items {
+      grid-template-columns: 1fr;
+    }
+    
+    .recommendation-details {
+      grid-template-columns: 1fr;
+    }
+    
+    .size-options {
+      justify-content: space-between;
+    }
+    
+    .size-option {
+      width: 36px;
+      height: 36px;
+    }
+  }

@@ -1,0 +1,274 @@
+{
+    "brand": "Zara",
+    "updated": "2024-06-15",
+    "source": "Official Zara Size Guide",
+    "gender_categories": {
+      "men": {
+        "tops": {
+          "unit": "cm",
+          "measurement_points": ["chest", "waist", "shoulder_width", "sleeve_length"],
+          "sizes": {
+            "XS": {
+              "chest": {"min": 86, "max": 91},
+              "waist": {"min": 71, "max": 76},
+              "shoulder_width": {"min": 42, "max": 43},
+              "sleeve_length": {"min": 61, "max": 62},
+              "neck": {"min": 36, "max": 37}
+            },
+            "S": {
+              "chest": {"min": 92, "max": 97},
+              "waist": {"min": 77, "max": 82},
+              "shoulder_width": {"min": 43.5, "max": 45},
+              "sleeve_length": {"min": 62.5, "max": 63.5},
+              "neck": {"min": 38, "max": 39}
+            },
+            "M": {
+              "chest": {"min": 98, "max": 103},
+              "waist": {"min": 83, "max": 88},
+              "shoulder_width": {"min": 45.5, "max": 47},
+              "sleeve_length": {"min": 64, "max": 65},
+              "neck": {"min": 40, "max": 41}
+            },
+            "L": {
+              "chest": {"min": 104, "max": 109},
+              "waist": {"min": 89, "max": 94},
+              "shoulder_width": {"min": 47.5, "max": 49},
+              "sleeve_length": {"min": 65.5, "max": 66.5},
+              "neck": {"min": 42, "max": 43}
+            },
+            "XL": {
+              "chest": {"min": 110, "max": 115},
+              "waist": {"min": 95, "max": 100},
+              "shoulder_width": {"min": 49.5, "max": 51},
+              "sleeve_length": {"min": 67, "max": 68},
+              "neck": {"min": 44, "max": 45}
+            },
+            "XXL": {
+              "chest": {"min": 116, "max": 121},
+              "waist": {"min": 101, "max": 106},
+              "shoulder_width": {"min": 51.5, "max": 53},
+              "sleeve_length": {"min": 68.5, "max": 69.5},
+              "neck": {"min": 46, "max": 47}
+            }
+          }
+        },
+        "pants": {
+          "unit": "cm",
+          "measurement_points": ["waist", "hip", "inseam"],
+          "sizes": {
+            "28": {
+              "waist": {"min": 71, "max": 73},
+              "hip": {"min": 88, "max": 90},
+              "inseam": {"min": 80, "max": 81}
+            },
+            "30": {
+              "waist": {"min": 76, "max": 78},
+              "hip": {"min": 93, "max": 95},
+              "inseam": {"min": 81, "max": 82}
+            },
+            "32": {
+              "waist": {"min": 81, "max": 83},
+              "hip": {"min": 98, "max": 100},
+              "inseam": {"min": 82, "max": 83}
+            },
+            "34": {
+              "waist": {"min": 86, "max": 88},
+              "hip": {"min": 103, "max": 105},
+              "inseam": {"min": 83, "max": 84}
+            },
+            "36": {
+              "waist": {"min": 91, "max": 93},
+              "hip": {"min": 108, "max": 110},
+              "inseam": {"min": 84, "max": 85}
+            },
+            "38": {
+              "waist": {"min": 96, "max": 98},
+              "hip": {"min": 113, "max": 115},
+              "inseam": {"min": 85, "max": 86}
+            },
+            "40": {
+              "waist": {"min": 101, "max": 103},
+              "hip": {"min": 118, "max": 120},
+              "inseam": {"min": 86, "max": 87}
+            }
+          }
+        }
+      },
+      "women": {
+        "tops": {
+          "unit": "cm",
+          "measurement_points": ["bust", "waist", "hip", "shoulder_width"],
+          "sizes": {
+            "XS": {
+              "bust": {"min": 80, "max": 84},
+              "waist": {"min": 60, "max": 64},
+              "hip": {"min": 86, "max": 90},
+              "shoulder_width": {"min": 37, "max": 38}
+            },
+            "S": {
+              "bust": {"min": 85, "max": 89},
+              "waist": {"min": 65, "max": 69},
+              "hip": {"min": 91, "max": 95},
+              "shoulder_width": {"min": 38.5, "max": 39.5}
+            },
+            "M": {
+              "bust": {"min": 90, "max": 94},
+              "waist": {"min": 70, "max": 74},
+              "hip": {"min": 96, "max": 100},
+              "shoulder_width": {"min": 40, "max": 41}
+            },
+            "L": {
+              "bust": {"min": 95, "max": 99},
+              "waist": {"min": 75, "max": 79},
+              "hip": {"min": 101, "max": 105},
+              "shoulder_width": {"min": 41.5, "max": 42.5}
+            },
+            "XL": {
+              "bust": {"min": 100, "max": 104},
+              "waist": {"min": 80, "max": 84},
+              "hip": {"min": 106, "max": 110},
+              "shoulder_width": {"min": 43, "max": 44}
+            }
+          }
+        },
+        "pants": {
+          "unit": "cm",
+          "measurement_points": ["waist", "hip", "inseam"],
+          "sizes": {
+            "34": {
+              "waist": {"min": 60, "max": 62},
+              "hip": {"min": 86, "max": 88},
+              "inseam": {"min": 76, "max": 77}
+            },
+            "36": {
+              "waist": {"min": 64, "max": 66},
+              "hip": {"min": 90, "max": 92},
+              "inseam": {"min": 77, "max": 78}
+            },
+            "38": {
+              "waist": {"min": 68, "max": 70},
+              "hip": {"min": 94, "max": 96},
+              "inseam": {"min": 78, "max": 79}
+            },
+            "40": {
+              "waist": {"min": 72, "max": 74},
+              "hip": {"min": 98, "max": 100},
+              "inseam": {"min": 79, "max": 80}
+            },
+            "42": {
+              "waist": {"min": 76, "max": 78},
+              "hip": {"min": 102, "max": 104},
+              "inseam": {"min": 80, "max": 81}
+            },
+            "44": {
+              "waist": {"min": 80, "max": 82},
+              "hip": {"min": 106, "max": 108},
+              "inseam": {"min": 81, "max": 82}
+            }
+          }
+        },
+        "dresses": {
+          "unit": "cm",
+          "measurement_points": ["bust", "waist", "hip"],
+          "sizes": {
+            "XS": {
+              "bust": {"min": 80, "max": 84},
+              "waist": {"min": 60, "max": 64},
+              "hip": {"min": 86, "max": 90}
+            },
+            "S": {
+              "bust": {"min": 85, "max": 89},
+              "waist": {"min": 65, "max": 69},
+              "hip": {"min": 91, "max": 95}
+            },
+            "M": {
+              "bust": {"min": 90, "max": 94},
+              "waist": {"min": 70, "max": 74},
+              "hip": {"min": 96, "max": 100}
+            },
+            "L": {
+              "bust": {"min": 95, "max": 99},
+              "waist": {"min": 75, "max": 79},
+              "hip": {"min": 101, "max": 105}
+            },
+            "XL": {
+              "bust": {"min": 100, "max": 104},
+              "waist": {"min": 80, "max": 84},
+              "hip": {"min": 106, "max": 110}
+            }
+          }
+        }
+      },
+      "kids": {
+        "unit": "cm",
+        "age_height_mapping": {
+          "2-3": {"height": {"min": 92, "max": 98}},
+          "3-4": {"height": {"min": 98, "max": 104}},
+          "4-5": {"height": {"min": 104, "max": 110}},
+          "5-6": {"height": {"min": 110, "max": 116}},
+          "6-7": {"height": {"min": 116, "max": 122}},
+          "7-8": {"height": {"min": 122, "max": 128}},
+          "8-9": {"height": {"min": 128, "max": 134}},
+          "9-10": {"height": {"min": 134, "max": 140}},
+          "10-11": {"height": {"min": 140, "max": 146}},
+          "11-12": {"height": {"min": 146, "max": 152}},
+          "12-13": {"height": {"min": 152, "max": 158}},
+          "13-14": {"height": {"min": 158, "max": 164}}
+        }
+      }
+    },
+    "conversion": {
+      "eu_to_us": {
+        "men_tops": {
+          "XS": "XS",
+          "S": "S",
+          "M": "M",
+          "L": "L",
+          "XL": "XL",
+          "XXL": "XXL"
+        },
+        "men_pants": {
+          "40": "28",
+          "42": "30",
+          "44": "32",
+          "46": "34",
+          "48": "36",
+          "50": "38",
+          "52": "40"
+        },
+        "women_tops": {
+          "XS": "XS (0-2)",
+          "S": "S (4-6)",
+          "M": "M (8-10)",
+          "L": "L (12-14)",
+          "XL": "XL (16)"
+        },
+        "women_pants": {
+          "34": "00-0",
+          "36": "2",
+          "38": "4",
+          "40": "6",
+          "42": "8",
+          "44": "10"
+        }
+      }
+    },
+    "fit_preference": {
+      "tops": {
+        "slim": -2,
+        "regular": 0,
+        "loose": 2
+      },
+      "pants": {
+        "slim": -1,
+        "regular": 0,
+        "loose": 1
+      }
+    },
+    "special_notes": [
+      "Zara clothing tends to run smaller than standard US sizes",
+      "For tops, measure the fullest part of your chest and around your natural waistline",
+      "For pants, measure around your natural waistline and the fullest part of your hips",
+      "If between sizes, size up for a more comfortable fit"
+    ]
+  }

@@ -1,0 +1,384 @@
+{
+    "brand": "H&M",
+    "updated": "2024-07-01",
+    "source": "Official H&M Size Guide",
+    "gender_categories": {
+      "men": {
+        "tops": {
+          "unit": "cm",
+          "measurement_points": ["chest", "waist", "neck"],
+          "sizes": {
+            "XS": {
+              "chest": {"min": 84, "max": 89},
+              "waist": {"min": 70, "max": 75},
+              "neck": {"min": 36, "max": 37}
+            },
+            "S": {
+              "chest": {"min": 90, "max": 95},
+              "waist": {"min": 76, "max": 81},
+              "neck": {"min": 38, "max": 39}
+            },
+            "M": {
+              "chest": {"min": 96, "max": 101},
+              "waist": {"min": 82, "max": 87},
+              "neck": {"min": 40, "max": 41}
+            },
+            "L": {
+              "chest": {"min": 102, "max": 107},
+              "waist": {"min": 88, "max": 93},
+              "neck": {"min": 42, "max": 43}
+            },
+            "XL": {
+              "chest": {"min": 108, "max": 113},
+              "waist": {"min": 94, "max": 99},
+              "neck": {"min": 44, "max": 45}
+            },
+            "XXL": {
+              "chest": {"min": 114, "max": 119},
+              "waist": {"min": 100, "max": 105},
+              "neck": {"min": 46, "max": 47}
+            }
+          }
+        },
+        "pants": {
+          "unit": "cm",
+          "measurement_points": ["waist", "hip", "inseam"],
+          "sizes": {
+            "28": {
+              "waist": {"min": 70, "max": 72},
+              "hip": {"min": 87, "max": 89},
+              "inseam": {"min": 79, "max": 80}
+            },
+            "30": {
+              "waist": {"min": 75, "max": 77},
+              "hip": {"min": 92, "max": 94},
+              "inseam": {"min": 80, "max": 81}
+            },
+            "32": {
+              "waist": {"min": 80, "max": 82},
+              "hip": {"min": 97, "max": 99},
+              "inseam": {"min": 81, "max": 82}
+            },
+            "34": {
+              "waist": {"min": 85, "max": 87},
+              "hip": {"min": 102, "max": 104},
+              "inseam": {"min": 82, "max": 83}
+            },
+            "36": {
+              "waist": {"min": 90, "max": 92},
+              "hip": {"min": 107, "max": 109},
+              "inseam": {"min": 83, "max": 84}
+            },
+            "38": {
+              "waist": {"min": 95, "max": 97},
+              "hip": {"min": 112, "max": 114},
+              "inseam": {"min": 84, "max": 85}
+            }
+          }
+        }
+      },
+      "women": {
+        "tops": {
+          "unit": "cm",
+          "measurement_points": ["bust", "waist", "hip"],
+          "sizes": {
+            "2": {
+              "bust": {"min": 78, "max": 82},
+              "waist": {"min": 58, "max": 62},
+              "hip": {"min": 84, "max": 88}
+            },
+            "4": {
+              "bust": {"min": 82, "max": 86},
+              "waist": {"min": 62, "max": 66},
+              "hip": {"min": 88, "max": 92}
+            },
+            "6": {
+              "bust": {"min": 86, "max": 90},
+              "waist": {"min": 66, "max": 70},
+              "hip": {"min": 92, "max": 96}
+            },
+            "8": {
+              "bust": {"min": 90, "max": 94},
+              "waist": {"min": 70, "max": 74},
+              "hip": {"min": 96, "max": 100}
+            },
+            "10": {
+              "bust": {"min": 94, "max": 98},
+              "waist": {"min": 74, "max": 78},
+              "hip": {"min": 100, "max": 104}
+            },
+            "12": {
+              "bust": {"min": 98, "max": 102},
+              "waist": {"min": 78, "max": 82},
+              "hip": {"min": 104, "max": 108}
+            },
+            "14": {
+              "bust": {"min": 102, "max": 106},
+              "waist": {"min": 82, "max": 86},
+              "hip": {"min": 108, "max": 112}
+            },
+            "16": {
+              "bust": {"min": 106, "max": 110},
+              "waist": {"min": 86, "max": 90},
+              "hip": {"min": 112, "max": 116}
+            }
+          }
+        },
+        "bottoms": {
+          "unit": "cm",
+          "measurement_points": ["waist", "hip", "inseam"],
+          "sizes": {
+            "2": {
+              "waist": {"min": 58, "max": 62},
+              "hip": {"min": 84, "max": 88},
+              "inseam": {"min": 75, "max": 76}
+            },
+            "4": {
+              "waist": {"min": 62, "max": 66},
+              "hip": {"min": 88, "max": 92},
+              "inseam": {"min": 76, "max": 77}
+            },
+            "6": {
+              "waist": {"min": 66, "max": 70},
+              "hip": {"min": 92, "max": 96},
+              "inseam": {"min": 77, "max": 78}
+            },
+            "8": {
+              "waist": {"min": 70, "max": 74},
+              "hip": {"min": 96, "max": 100},
+              "inseam": {"min": 78, "max": 79}
+            },
+            "10": {
+              "waist": {"min": 74, "max": 78},
+              "hip": {"min": 100, "max": 104},
+              "inseam": {"min": 79, "max": 80}
+            },
+            "12": {
+              "waist": {"min": 78, "max": 82},
+              "hip": {"min": 104, "max": 108},
+              "inseam": {"min": 80, "max": 81}
+            },
+            "14": {
+              "waist": {"min": 82, "max": 86},
+              "hip": {"min": 108, "max": 112},
+              "inseam": {"min": 81, "max": 82}
+            },
+            "16": {
+              "waist": {"min": 86, "max": 90},
+              "hip": {"min": 112, "max": 116},
+              "inseam": {"min": 82, "max": 83}
+            }
+          }
+        },
+        "dresses": {
+          "unit": "cm",
+          "measurement_points": ["bust", "waist", "hip"],
+          "sizes": {
+            "2": {
+              "bust": {"min": 78, "max": 82},
+              "waist": {"min": 58, "max": 62},
+              "hip": {"min": 84, "max": 88}
+            },
+            "4": {
+              "bust": {"min": 82, "max": 86},
+              "waist": {"min": 62, "max": 66},
+              "hip": {"min": 88, "max": 92}
+            },
+            "6": {
+              "bust": {"min": 86, "max": 90},
+              "waist": {"min": 66, "max": 70},
+              "hip": {"min": 92, "max": 96}
+            },
+            "8": {
+              "bust": {"min": 90, "max": 94},
+              "waist": {"min": 70, "max": 74},
+              "hip": {"min": 96, "max": 100}
+            },
+            "10": {
+              "bust": {"min": 94, "max": 98},
+              "waist": {"min": 74, "max": 78},
+              "hip": {"min": 100, "max": 104}
+            },
+            "12": {
+              "bust": {"min": 98, "max": 102},
+              "waist": {"min": 78, "max": 82},
+              "hip": {"min": 104, "max": 108}
+            },
+            "14": {
+              "bust": {"min": 102, "max": 106},
+              "waist": {"min": 82, "max": 86},
+              "hip": {"min": 108, "max": 112}
+            },
+            "16": {
+              "bust": {"min": 106, "max": 110},
+              "waist": {"min": 86, "max": 90},
+              "hip": {"min": 112, "max": 116}
+            }
+          }
+        }
+      },
+      "kids": {
+        "unit": "cm",
+        "age_size_mapping": {
+          "1-2y": {
+            "height": {"min": 80, "max": 92},
+            "chest": {"min": 51, "max": 54},
+            "waist": {"min": 50, "max": 52}
+          },
+          "2-3y": {
+            "height": {"min": 92, "max": 98},
+            "chest": {"min": 54, "max": 56},
+            "waist": {"min": 52, "max": 53}
+          },
+          "3-4y": {
+            "height": {"min": 98, "max": 104},
+            "chest": {"min": 56, "max": 58},
+            "waist": {"min": 53, "max": 54}
+          },
+          "4-5y": {
+            "height": {"min": 104, "max": 110},
+            "chest": {"min": 58, "max": 61},
+            "waist": {"min": 54, "max": 55}
+          },
+          "5-6y": {
+            "height": {"min": 110, "max": 116},
+            "chest": {"min": 61, "max": 64},
+            "waist": {"min": 55, "max": 56}
+          },
+          "6-7y": {
+            "height": {"min": 116, "max": 122},
+            "chest": {"min": 64, "max": 67},
+            "waist": {"min": 56, "max": 57}
+          },
+          "7-8y": {
+            "height": {"min": 122, "max": 128},
+            "chest": {"min": 67, "max": 70},
+            "waist": {"min": 57, "max": 59}
+          },
+          "8-9y": {
+            "height": {"min": 128, "max": 134},
+            "chest": {"min": 70, "max": 73},
+            "waist": {"min": 59, "max": 61}
+          },
+          "9-10y": {
+            "height": {"min": 134, "max": 140},
+            "chest": {"min": 73, "max": 77},
+            "waist": {"min": 61, "max": 63}
+          },
+          "10-11y": {
+            "height": {"min": 140, "max": 146},
+            "chest": {"min": 77, "max": 81},
+            "waist": {"min": 63, "max": 65}
+          },
+          "11-12y": {
+            "height": {"min": 146, "max": 152},
+            "chest": {"min": 81, "max": 85},
+            "waist": {"min": 65, "max": 67}
+          },
+          "12-13y": {
+            "height": {"min": 152, "max": 158},
+            "chest": {"min": 85, "max": 89},
+            "waist": {"min": 67, "max": 69}
+          },
+          "13-14y": {
+            "height": {"min": 158, "max": 164},
+            "chest": {"min": 89, "max": 93},
+            "waist": {"min": 69, "max": 71}
+          }
+        }
+      }
+    },
+    "conversion": {
+      "eu_to_us": {
+        "women_tops": {
+          "32": "2",
+          "34": "4",
+          "36": "6",
+          "38": "8",
+          "40": "10",
+          "42": "12",
+          "44": "14",
+          "46": "16"
+        },
+        "women_bottoms": {
+          "32": "2",
+          "34": "4",
+          "36": "6",
+          "38": "8",
+          "40": "10",
+          "42": "12",
+          "44": "14",
+          "46": "16"
+        },
+        "men_tops": {
+          "42": "32",
+          "44": "34",
+          "46": "36",
+          "48": "38",
+          "50": "40",
+          "52": "42",
+          "54": "44"
+        },
+        "men_bottoms": {
+          "42": "28",
+          "44": "30",
+          "46": "32",
+          "48": "34",
+          "50": "36",
+          "52": "38",
+          "54": "40"
+        }
+      },
+      "letter_to_number": {
+        "women": {
+          "XS": "0-2",
+          "S": "4-6",
+          "M": "8-10",
+          "L": "12-14",
+          "XL": "16-18",
+          "XXL": "20-22"
+        },
+        "men": {
+          "XS": "34",
+          "S": "36-38",
+          "M": "40",
+          "L": "42-44",
+          "XL": "46",
+          "XXL": "48-50"
+        }
+      }
+    },
+    "fit_preference": {
+      "tops": {
+        "slim": -3,
+        "regular": 0,
+        "loose": 3
+      },
+      "bottoms": {
+        "slim": -2,
+        "regular": 0,
+        "loose": 2
+      },
+      "dresses": {
+        "slim": -2,
+        "regular": 0,
+        "loose": 2
+      }
+    },
+    "special_notes": [
+      "H&M sizes tend to run smaller than standard US sizes",
+      "Women's clothing uses both numerical (2-16) and letter sizes (XS-XXL)",
+      "Men's pants are sized by waist measurement in inches",
+      "For most accurate fit, measure yourself in your underwear",
+      "If between sizes, consider sizing up for comfort"
+    ],
+    "material_stretch_factors": {
+      "denim": 1.0,
+      "cotton": 1.02,
+      "polyester": 1.0,
+      "linen": 1.0,
+      "elastane_mix": 1.05,
+      "jersey": 1.1,
+      "wool": 0.98
+    }
+  }

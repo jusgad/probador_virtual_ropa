@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Fitting Room | Prueba ropa virtualmente</title>
+    <meta name="description" content="Prueba ropa virtualmente con nuestra tecnología de ajuste 3D. Encuentra tu talla perfecta y visualiza cómo te quedará cada prenda antes de comprarla.">
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon">
+    
+    <!-- Hojas de estilo -->
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/responsive.css">
+    
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+<body>
+    <!-- Overlay de carga -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Cargando...</p>
+    </div>
+    
+    <!-- Mensaje de error global -->
+    <div id="error-message" class="global-error-message">
+        Error al cargar la aplicación. Por favor, recarga la página.
+    </div>
+    
+    <!-- Cabecera -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="/">
+                        <img src="/static/img/logo.png" alt="Virtual Fitting Room Logo">
+                    </a>
+                </div>
+                
+                <nav class="main-nav">
+                    <button class="nav-toggle" aria-label="Abrir menú">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    
+                    <div class="nav-overlay"></div>
+                    
+                    <ul class="nav-items">
+                        <li><a href="/" class="nav-link active" data-page="home">Inicio</a></li>
+                        <li><a href="/measurement" class="nav-link" data-page="measurement">Medición</a></li>
+                        <li><a href="/fitting" class="nav-link" data-page="fitting">Prueba Virtual</a></li>
+                        <li><a href="/about" class="nav-link" data-page="about">Cómo Funciona</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="user-actions">
+                    <div class="user-profile" data-auth-required>
+                        <button id="user-profile-button" class="profile-button">
+                            <i class="fas fa-user-circle"></i>
+                            <span class="username">Usuario</span>
+                        </button>
+                        <div class="profile-dropdown">
+                            <ul>
+                                <li><a href="/profile">Mi Perfil</a></li>
+                                <li><a href="/measurements">Mis Medidas</a></li>
+                                <li><a href="/favorites">Favoritos</a></li>
+                                <li><a href="/logout">Cerrar Sesión</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="auth-buttons" data-auth-hidden>
+                        <a href="/login" class="btn btn-outline">Iniciar Sesión</a>
+                        <a href="/register" class="btn btn-primary">Registrarse</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Contenido principal -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1>Prueba ropa virtualmente antes de comprar</h1>
+                        <p>Nuestro probador virtual utiliza tecnología avanzada para mostrarte cómo te quedará la ropa en tu cuerpo. Olvídate de las devoluciones por tallas incorrectas.</p>
+                        <div class="hero-buttons">
+                            <a href="/measurement" class="btn btn-primary btn-large">Tomar Medidas</a>
+                            <a href="/fitting" class="btn btn-outline btn-large">Probar Ropa</a>
+                        </div>
+                    </div>
+                    <div class="hero-image">
+                        <img src="/static/img/hero-illustration.png" alt="Prueba virtual de ropa">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Características -->
+        <section class="features-section">
+            <div class="container">
+                <h2 class="section-title">¿Por qué usar nuestro probador virtual?</h2>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-ruler"></i>
+                        </div>
+                        <h3>Medidas Precisas</h3>
+                        <p>Utilizamos tecnología avanzada para obtener tus medidas con precisión utilizando solo tu cámara.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-tshirt"></i>
+                        </div>
+                        <h3>Prueba Virtual</h3>
+                        <p>Visualiza cómo te quedarán diferentes prendas y tallas en tu cuerpo antes de comprar.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-tags"></i>
+                        </div>
+                        <h3>Recomendación de Tallas</h3>
+                        <p>Recibe recomendaciones personalizadas de tallas basadas en tus medidas exactas.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <h3>Menos Devoluciones</h3>
+                        <p>Reduce las devoluciones por tallas incorrectas al comprar con confianza.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Cómo Funciona -->
+        <section class="how-it-works-section">
+            <div class="container">
+                <h2 class="section-title">Cómo Funciona</h2>
+                
+                <div class="steps-container">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Toma tus medidas</h3>
+                            <p>Toma un par de fotos con tu cámara o sube imágenes existentes para que nuestro sistema detecte automáticamente tus medidas corporales.</p>
+                            <img src="/static/img/step-measurement.jpg" alt="Toma de medidas" class="step-image">
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Selecciona prendas</h3>
+                            <p>Explora nuestro catálogo de prendas o sube tus propias imágenes de productos que te interesen.</p>
+                            <img src="/static/img/step-selection.jpg" alt="Selección de prendas" class="step-image">
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Prueba virtual</h3>
+                            <p>Visualiza cómo te quedarán las prendas en tu cuerpo con nuestro sistema de ajuste 3D y recibe recomendaciones de talla.</p>
+                            <img src="/static/img/step-fitting.jpg" alt="Prueba virtual" class="step-image">
+                        </div>
+                    </div>
+                    
+                    <div class="step-item">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h3>Compra con confianza</h3>
+                            <p>Utiliza las recomendaciones para realizar tus compras con la seguridad de elegir la talla correcta.</p>
+                            <img src="/static/img/step-purchase.jpg" alt="Compra con confianza" class="step-image">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="cta-container">
+                    <a href="/measurement" class="btn btn-primary">Comenzar Ahora</a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Testimonios -->
+        <section class="testimonials-section">
+            <div class="container">
+                <h2 class="section-title">Lo que dicen nuestros usuarios</h2>
+                
+                <div class="testimonials-slider">
+                    <div class="testimonial-item">
+                        <div class="testimonial-content">
+                            <p class="testimonial-text">"Gracias a esta aplicación, ya no tengo que preocuparme por comprar la talla equivocada. Las recomendaciones son increíblemente precisas."</p>
+                            <div class="testimonial-author">
+                                <img src="/static/img/testimonials/user1.jpg" alt="María García" class="author-image">
+                                <div class="author-info">
+                                    <h4>María García</h4>
+                                    <p>Cliente habitual</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-item">
+                        <div class="testimonial-content">
+                            <p class="testimonial-text">"Increíble tecnología. He reducido mis devoluciones a cero desde que empecé a usar el probador virtual antes de mis compras online."</p>
+                            <div class="testimonial-author">
+                                <img src="/static/img/testimonials/user2.jpg" alt="Carlos Rodríguez" class="author-image">
+                                <div class="author-info">
+                                    <h4>Carlos Rodríguez</h4>
+                                    <p>Usuario desde 2022</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-item">
+                        <div class="testimonial-content">
+                            <p class="testimonial-text">"La función de medición es sorprendentemente precisa y fácil de usar. Me encanta poder ver cómo me quedarán las prendas antes de comprarlas."</p>
+                            <div class="testimonial-author">
+                                <img src="/static/img/testimonials/user3.jpg" alt="Laura Martínez" class="author-image">
+                                <div class="author-info">
+                                    <h4>Laura Martínez</h4>
+                                    <p>Compradora frecuente</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-dots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Marcas compatibles -->
+        <section class="brands-section">
+            <div class="container">
+                <h2 class="section-title">Marcas Compatibles</h2>
+                <p class="section-subtitle">Nuestro sistema trabaja con tablas de tallas de las siguientes marcas:</p>
+                
+                <div class="brands-grid">
+                    <div class="brand-item">
+                        <img src="/static/img/brands/zara.png" alt="Zara">
+                    </div>
+                    <div class="brand-item">
+                        <img src="/static/img/brands/hm.png" alt="H&M">
+                    </div>
+                    <div class="brand-item">
+                        <img src="/static/img/brands/levis.png" alt="Levi's">
+                    </div>
+                    <div class="brand-item">
+                        <img src="/static/img/brands/nike.png" alt="Nike">
+                    </div>
+                    <div class="brand-item">
+                        <img src="/static/img/brands/adidas.png" alt="Adidas">
+                    </div>
+                    <div class="brand-item">
+                        <img src="/static/img/brands/mango.png" alt="Mango">
+                    </div>
+                </div>
+                
+                <p class="brands-note">Continuamente añadimos compatibilidad con más marcas. Si no encuentras tu marca favorita, puedes usar nuestra tabla de tallas genérica.</p>
+            </div>
+        </section>
+        
+        <!-- CTA Final -->
+        <section class="final-cta-section">
+            <div class="container">
+                <div class="cta-content">
+                    <h2>¿Listo para revolucionar tu experiencia de compra online?</h2>
+                    <p>Comienza a probar ropa virtualmente y olvídate de las devoluciones por tallas incorrectas.</p>
+                    <div class="cta-buttons">
+                        <a href="/measurement" class="btn btn-primary btn-large">Comenzar Ahora</a>
+                        <a href="/about" class="btn btn-outline btn-large">Saber Más</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Pie de página -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <img src="/static/img/logo-white.png" alt="Virtual Fitting Room Logo">
+                    </div>
+                    <p>Tecnología avanzada para probarte ropa virtualmente y encontrar tu talla perfecta.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="/">Inicio</a></li>
+                        <li><a href="/measurement">Tomar Medidas</a></li>
+                        <li><a href="/fitting">Probar Ropa</a></li>
+                        <li><a href="/about">Cómo Funciona</a></li>
+                        <li><a href="/brands">Marcas Compatibles</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Soporte</h3>
+                    <ul class="footer-links">
+                        <li><a href="/faq">Preguntas Frecuentes</a></li>
+                        <li><a href="/contact">Contacto</a></li>
+                        <li><a href="/help">Ayuda</a></li>
+                        <li><a href="/privacy">Política de Privacidad</a></li>
+                        <li><a href="/terms">Términos de Uso</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contacto</h3>
+                    <address class="contact-info">
+                        <p><i class="fas fa-map-marker-alt"></i> Calle Principal 123, Ciudad</p>
+                        <p><i class="fas fa-phone-alt"></i> +34 912 345 678</p>
+                        <p><i class="fas fa-envelope"></i> info@virtualfitting.com</p>
+                    </address>
+                    <div class="newsletter">
+                        <h4>Recibe novedades</h4>
+                        <form class="newsletter-form">
+                            <input type="email" placeholder="Tu correo electrónico" required>
+                            <button type="submit"><i class="fas fa-arrow-right"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 Virtual Fitting Room. Todos los derechos reservados.</p>
+                <div class="language-selector">
+                    <select id="language-selector">
+                        <option value="es">Español</option>
+                        <option value="en">English</option>
+                        <option value="fr">Français</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="/static/js/app.js" type="module"></script>
+</body>
+</html>

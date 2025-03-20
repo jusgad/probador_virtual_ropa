@@ -1,0 +1,392 @@
+/* measurement.css - Estilos para la página de medición de usuarios */
+
+/* Variables globales */
+:root {
+    --primary-color: #4a90e2;
+    --secondary-color: #5cb85c;
+    --accent-color: #f39c12;
+    --error-color: #e74c3c;
+    --text-color: #333333;
+    --light-gray: #f5f5f5;
+    --medium-gray: #e0e0e0;
+    --dark-gray: #9e9e9e;
+    --white: #ffffff;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+  }
+  
+  /* Estilos generales de la página de medición */
+  .measurement-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .measurement-title {
+    text-align: center;
+    color: var(--text-color);
+    margin-bottom: 20px;
+  }
+  
+  .measurement-subtitle {
+    font-size: 1.2rem;
+    color: var(--dark-gray);
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  /* Área de visualización y captura */
+  .measurement-capture-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+  
+  .capture-video-container {
+    flex: 1;
+    min-width: 300px;
+    height: 450px;
+    background-color: var(--light-gray);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--shadow);
+  }
+  
+  .capture-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .capture-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+  }
+  
+  .capture-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--dark-gray);
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .capture-placeholder i {
+    font-size: 48px;
+    margin-bottom: 15px;
+  }
+  
+  /* Controles de captura */
+  .capture-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .capture-button {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .capture-button:hover {
+    background-color: #3a7bc8;
+  }
+  
+  .capture-button:disabled {
+    background-color: var(--medium-gray);
+    cursor: not-allowed;
+  }
+  
+  .capture-button i {
+    font-size: 1.2rem;
+  }
+  
+  .upload-button {
+    background-color: var(--white);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+  }
+  
+  .upload-button:hover {
+    background-color: #f0f7ff;
+  }
+  
+  /* Instrucciones de medición */
+  .measurement-instructions {
+    background-color: var(--light-gray);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: var(--shadow);
+  }
+  
+  .instructions-title {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    color: var(--text-color);
+    font-weight: 600;
+  }
+  
+  .instructions-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .instructions-list li {
+    margin-bottom: 12px;
+    padding-left: 25px;
+    position: relative;
+  }
+  
+  .instructions-list li:before {
+    content: "•";
+    position: absolute;
+    left: 8px;
+    color: var(--primary-color);
+    font-weight: bold;
+  }
+  
+  /* Resultados de medición */
+  .measurement-results {
+    background-color: var(--white);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+  
+  .results-title {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    color: var(--text-color);
+    font-weight: 600;
+    border-bottom: 1px solid var(--medium-gray);
+    padding-bottom: 10px;
+  }
+  
+  .results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+  }
+  
+  .measurement-item {
+    background-color: var(--light-gray);
+    border-radius: 6px;
+    padding: 15px;
+    text-align: center;
+    transition: var(--transition);
+  }
+  
+  .measurement-item:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+  }
+  
+  .measurement-label {
+    font-size: 0.9rem;
+    color: var(--dark-gray);
+    margin-bottom: 8px;
+  }
+  
+  .measurement-value {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-color);
+  }
+  
+  .measurement-unit {
+    font-size: 0.8rem;
+    color: var(--dark-gray);
+    margin-left: 5px;
+  }
+  
+  /* Botones de acción */
+  .action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 40px;
+  }
+  
+  .action-button {
+    padding: 12px 25px;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+  }
+  
+  .primary-action {
+    background-color: var(--secondary-color);
+    color: var(--white);
+  }
+  
+  .primary-action:hover {
+    background-color: #4cae4c;
+  }
+  
+  .secondary-action {
+    background-color: var(--white);
+    color: var(--text-color);
+    border: 1px solid var(--medium-gray);
+  }
+  
+  .secondary-action:hover {
+    background-color: var(--light-gray);
+  }
+  
+  /* Indicadores de estado del proceso */
+  .measurement-progress {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    position: relative;
+  }
+  
+  .progress-step {
+    flex: 1;
+    text-align: center;
+    padding: 15px 0;
+    position: relative;
+    z-index: 5;
+  }
+  
+  .progress-step-number {
+    width: 35px;
+    height: 35px;
+    background-color: var(--medium-gray);
+    color: var(--text-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    transition: var(--transition);
+  }
+  
+  .progress-step-text {
+    font-size: 0.9rem;
+    color: var(--dark-gray);
+    transition: var(--transition);
+  }
+  
+  .progress-step.active .progress-step-number,
+  .progress-step.completed .progress-step-number {
+    background-color: var(--primary-color);
+    color: var(--white);
+  }
+  
+  .progress-step.active .progress-step-text,
+  .progress-step.completed .progress-step-text {
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+  
+  .progress-line {
+    position: absolute;
+    top: 32px;
+    left: 17%;
+    right: 17%;
+    height: 2px;
+    background-color: var(--medium-gray);
+    z-index: 1;
+  }
+  
+  .progress-line-filled {
+    position: absolute;
+    top: 32px;
+    left: 17%;
+    height: 2px;
+    background-color: var(--primary-color);
+    z-index: 2;
+    transition: var(--transition);
+  }
+  
+  /* Mensajes de alerta y error */
+  .alert-message {
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .alert-message i {
+    font-size: 1.2rem;
+  }
+  
+  .error-message {
+    background-color: #fdecea;
+    color: var(--error-color);
+    border-left: 4px solid var(--error-color);
+  }
+  
+  .info-message {
+    background-color: #e8f4fd;
+    color: var(--primary-color);
+    border-left: 4px solid var(--primary-color);
+  }
+  
+  .success-message {
+    background-color: #ebf7eb;
+    color: var(--secondary-color);
+    border-left: 4px solid var(--secondary-color);
+  }
+  
+  /* Estilos responsivos */
+  @media (max-width: 768px) {
+    .measurement-capture-area {
+      flex-direction: column;
+    }
+    
+    .capture-video-container {
+      height: 400px;
+    }
+    
+    .results-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .action-buttons {
+      flex-direction: column;
+    }
+    
+    .action-button {
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .results-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .progress-step-text {
+      font-size: 0.8rem;
+    }
+  }

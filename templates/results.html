@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de Ajuste | Virtual Fitting Room</title>
+    <meta name="description" content="Visualiza cómo te queda la ropa y obtén recomendaciones de talla basadas en tus medidas exactas.">
+    
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="/static/img/favicon.ico" type="image/x-icon">
+    
+    <!-- Hojas de estilo -->
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/results.css">
+    <link rel="stylesheet" href="/static/css/responsive.css">
+    
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+</head>
+<body>
+    <!-- Overlay de carga -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Cargando...</p>
+    </div>
+    
+    <!-- Mensaje de error global -->
+    <div id="error-message" class="global-error-message">
+        Error al cargar la aplicación. Por favor, recarga la página.
+    </div>
+    
+    <!-- Cabecera -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="/">
+                        <img src="/static/img/logo.png" alt="Virtual Fitting Room Logo">
+                    </a>
+                </div>
+                
+                <nav class="main-nav">
+                    <button class="nav-toggle" aria-label="Abrir menú">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    
+                    <div class="nav-overlay"></div>
+                    
+                    <ul class="nav-items">
+                        <li><a href="/" class="nav-link" data-page="home">Inicio</a></li>
+                        <li><a href="/measurement" class="nav-link" data-page="measurement">Medición</a></li>
+                        <li><a href="/fitting" class="nav-link" data-page="fitting">Prueba Virtual</a></li>
+                        <li><a href="/results" class="nav-link active" data-page="results">Resultados</a></li>
+                        <li><a href="/about" class="nav-link" data-page="about">Cómo Funciona</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="user-actions">
+                    <div class="user-profile" data-auth-required>
+                        <button id="user-profile-button" class="profile-button">
+                            <i class="fas fa-user-circle"></i>
+                            <span class="username">Usuario</span>
+                        </button>
+                        <div class="profile-dropdown">
+                            <ul>
+                                <li><a href="/profile">Mi Perfil</a></li>
+                                <li><a href="/measurements">Mis Medidas</a></li>
+                                <li><a href="/favorites">Favoritos</a></li>
+                                <li><a href="/logout">Cerrar Sesión</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="auth-buttons" data-auth-hidden>
+                        <a href="/login" class="btn btn-outline">Iniciar Sesión</a>
+                        <a href="/register" class="btn btn-primary">Registrarse</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Contenido principal -->
+    <main>
+        <div class="container">
+            <div class="results-container">
+                <!-- Título y descripción -->
+                <div class="page-header">
+                    <h1 class="results-title">Resultados de Ajuste</h1>
+                    <p class="results-subtitle">Análisis detallado de cómo te queda la prenda seleccionada</p>
+                </div>
+                
+                <!-- Contenido principal dividido en dos columnas -->
+                <div class="results-content">
+                    <!-- Columna izquierda: visualización de ajuste -->
+                    <div class="results-column fit-visualization">
+                        <!-- Visualización de la prenda -->
+                        <div class="garment-preview">
+                            <h2>Vista Previa</h2>
+                            <div class="preview-container">
+                                <img id="result-preview-image" src="/static/img/placeholder_fitting.png" alt="Visualización de ajuste">
+                            </div>
+                            
+                            <!-- Selector de vista -->
+                            <div class="view-controls">
+                                <button class="view-button active" data-view="front">
+                                    <i class="fas fa-male"></i>
+                                    Frente
+                                </button>
+                                <button class="view-button" data-view="side">
+                                    <i class="fas fa-male fa-rotate-90"></i>
+                                    Lateral
+                                </button>
+                                <button class="view-button" data-view="back">
+                                    <i class="fas fa-male fa-flip-horizontal"></i>
+                                    Espalda
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Información de la prenda -->
+                        <div id="clothing-info" class="clothing-info">
+                            <div class="clothing-not-selected">
+                                <i class="fas fa-tshirt"></i>
+                                <p>No hay prenda seleccionada</p>
+                                <a href="/fitting" class="btn btn-outline">Seleccionar Prenda</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Columna derecha: análisis y datos -->
+                    <div class="results-column fit-analysis">
+                        <!-- Recomendación de talla -->
+                        <div id="size-recommendation" class="size-recommendation">
+                            <h2>Talla Recomendada</h2>
+                            <div class="recommendation-content">
+                                <div class="recommended-size">L</div>
+                                <div class="size-score">
+                                    <div class="score-bar">
+                                        <div class="score-fill" style="width: 85%"></div>
+                                    </div>
+                                    <div class="score-label">85% de ajuste</div>
+                                </div>
+                                <div class="fit-description regular">
+                                    <i class="fas fa-check-circle"></i>
+                                    Esta talla te quedará bien
+                                </div>
+                            </div>
+                            
+                            <!-- Tallas alternativas -->
+                            <div class="size-alternatives">
+                                <h3>Tallas Alternativas</h3>
+                                <div class="alternatives-grid">
+                                    <div class="alternative-size">
+                                        <div class="size-label">M</div>
+                                        <div class="fit-type tight">Ajustado</div>
+                                        <div class="alt-score">78%</div>
+                                    </div>
+                                    <div class="alternative-size">
+                                        <div class="size-label">XL</div>
+                                        <div class="fit-type loose">Holgado</div>
+                                        <div class="alt-score">72%</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Análisis detallado de ajuste -->
+                        <div class="fit-details">
+                            <h2>Análisis Detallado</h2>
+                            
+                            <!-- Tabla de medidas -->
+                            <div class="measurements-table-container">
+                                <h3>Comparación de Medidas</h3>
+                                <table id="measurements-table" class="measurements-table">
+                                    <tr>
+                                        <th>Medida</th>
+                                        <th>Tus medidas</th>
+                                        <th>Medidas de la prenda</th>
+                                        <th>Diferencia</th>
+                                    </tr>
+                                    <tr>
+                                        <td>Pecho</td>
+                                        <td>102 cm</td>
+                                        <td>106 cm</td>
+                                        <td class="positive">+4 cm</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cintura</td>
+                                        <td>88 cm</td>
+                                        <td>92 cm</td>
+                                        <td class="positive">+4 cm</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cadera</td>
+                                        <td>104 cm</td>
+                                        <td>108 cm</td>
+                                        <td class="positive">+4 cm</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Hombros</td>
+                                        <td>45 cm</td>
+                                        <td>47 cm</td>
+                                        <td class="positive">+2 cm</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Largo</td>
+                                        <td>70 cm</td>
+                                        <td>72 cm</td>
+                                        <td class="positive">+2 cm</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            
+                            <!-- Mapa de ajuste -->
+                            <div class="fit-map">
+                                <h3>Mapa de Ajuste</h3>
+                                <div class="body-map-container">
+                                    <div class="body-map">
+                                        <img src="/static/img/body_map.png" alt="Mapa corporal">
+                                        
+                                        <!-- Indicadores de ajuste -->
+                                        <div class="fit-indicator chest" data-fit="regular">
+                                            <span class="indicator-dot"></span>
+                                            <div class="indicator-tooltip">
+                                                <strong>Pecho:</strong> Ajuste regular
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="fit-indicator shoulder" data-fit="regular">
+                                            <span class="indicator-dot"></span>
+                                            <div class="indicator-tooltip">
+                                                <strong>Hombros:</strong> Ajuste regular
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="fit-indicator waist" data-fit="loose">
+                                            <span class="indicator-dot"></span>
+                                            <div class="indicator-tooltip">
+                                                <strong>Cintura:</strong> Ajuste holgado
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="fit-indicator hips" data-fit="regular">
+                                            <span class="indicator-dot"></span>
+                                            <div class="indicator-tooltip">
+                                                <strong>Cadera:</strong> Ajuste regular
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="fit-indicator sleeve" data-fit="tight">
+                                            <span class="indicator-dot"></span>
+                                            <div class="indicator-tooltip">
+                                                <strong>Manga:</strong> Ajuste ajustado
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="fit-legend">
+                                        <div class="legend-item tight">
+                                            <span class="legend-dot"></span>
+                                            <span class="legend-text">Ajustado</span>
+                                        </div>
+                                        <div class="legend-item regular">
+                                            <span class="legend-dot"></span>
+                                            <span class="legend-text">Regular</span>
+                                        </div>
+                                        <div class="legend-item loose">
+                                            <span class="legend-dot"></span>
+                                            <span class="legend-text">Holgado</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Consejos de ajuste -->
+                            <div class="fit-advice">
+                                <h3>Consejos de Ajuste</h3>
+                                <ul class="advice-list">
+                                    <li>
+                                        <i class="fas fa-check-circle"></i>
+                                        Esta prenda te ofrece un ajuste general cómodo.
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-info-circle"></i>
+                                        Las mangas podrían sentirse un poco ajustadas en los brazos.
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-info-circle"></i>
+                                        La cintura tiene espacio extra, podrías necesitar un cinturón.
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-lightbulb"></i>
+                                        Si prefieres un ajuste más ceñido en general, prueba la talla M.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Información de marca y tallas -->
+                        <div class="brand-info">
+                            <h2>Información de Marca</h2>
+                            
+                            <!-- Tabla de tallas -->
+                            <div class="size-chart-container">
+                                <h3>Tabla de Tallas</h3>
+                                <div class="size-chart">
+                                    <table>
+                                        <tr>
+                                            <th>Talla</th>
+                                            <th>Pecho (cm)</th>
+                                            <th>Cintura (cm)</th>
+                                            <th>Cadera (cm)</th>
+                                        </tr>
+                                        <tr>
+                                            <td>S</td>
+                                            <td>86-94</td>
+                                            <td>74-82</td>
+                                            <td>90-98</td>
+                                        </tr>
+                                        <tr>
+                                            <td>M</td>
+                                            <td>94-102</td>
+                                            <td>82-90</td>
+                                            <td>98-106</td>
+                                        </tr>
+                                        <tr class="highlighted">
+                                            <td>L</td>
+                                            <td>102-110</td>
+                                            <td>90-98</td>
+                                            <td>106-114</td>
+                                        </tr>
+                                        <tr>
+                                            <td>XL</td>
+                                            <td>110-118</td>
+                                            <td>98-106</td>
+                                            <td>114-122</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                
+                                <!-- Selector de región -->
+                                <div class="region-selector">
+                                    <label for="region-select">Región:</label>
+                                    <select id="region-select">
+                                        <option value="EU" selected>Europea (EU)</option>
+                                        <option value="US">Americana (US)</option>
+                                        <option value="UK">Reino Unido (UK)</option>
+                                        <option value="INT">Internacional (INT)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Acciones finales -->
+                <div class="results-actions">
+                    <a href="/fitting" class="btn btn-outline">
+                        <i class="fas fa-chevron-left"></i>
+                        Probar Otra Prenda
+                    </a>
+                    <button class="btn btn-primary save-results">
+                        <i class="fas fa-save"></i>
+                        Guardar Resultados
+                    </button>
+                    <a href="#" class="btn btn-primary external-link" target="_blank">
+                        <i class="fas fa-external-link-alt"></i>
+                        Ver en Tienda
+                    </a>
+                </div>
+                
+                <!-- Recomendaciones adicionales -->
+                <div class="additional-recommendations">
+                    <h2>También podría interesarte</h2>
+                    
+                    <div class="recommendations-grid">
+                        <div class="recommendation-item">
+                            <div class="recommendation-image">
+                                <img src="/static/img/recommendations/item1.jpg" alt="Camisa a cuadros">
+                            </div>
+                            <div class="recommendation-info">
+                                <h3>Camisa a cuadros</h3>
+                                <div class="recommendation-size">Talla recomendada: L</div>
+                                <div class="recommendation-actions">
+                                    <button class="btn btn-small">Probar</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="recommendation-item">
+                            <div class="recommendation-image">
+                                <img src="/static/img/recommendations/item2.jpg" alt="Pantalón chino">
+                            </div>
+                            <div class="recommendation-info">
+                                <h3>Pantalón chino</h3>
+                                <div class="recommendation-size">Talla recomendada: 34</div>
+                                <div class="recommendation-actions">
+                                    <button class="btn btn-small">Probar</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="recommendation-item">
+                            <div class="recommendation-image">
+                                <img src="/static/img/recommendations/item3.jpg" alt="Chaqueta vaquera">
+                            </div>
+                            <div class="recommendation-info">
+                                <h3>Chaqueta vaquera</h3>
+                                <div class="recommendation-size">Talla recomendada: L</div>
+                                <div class="recommendation-actions">
+                                    <button class="btn btn-small">Probar</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="recommendation-item">
+                            <div class="recommendation-image">
+                                <img src="/static/img/recommendations/item4.jpg" alt="Camiseta básica">
+                            </div>
+                            <div class="recommendation-info">
+                                <h3>Camiseta básica</h3>
+                                <div class="recommendation-size">Talla recomendada: L</div>
+                                <div class="recommendation-actions">
+                                    <button class="btn btn-small">Probar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Pie de página -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-column">
+                    <div class="footer-logo">
+                        <img src="/static/img/logo-white.png" alt="Virtual Fitting Room Logo">
+                    </div>
+                    <p>Tecnología avanzada para probarte ropa virtualmente y encontrar tu talla perfecta.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul class="footer-links">
+                        <li><a href="/">Inicio</a></li>
+                        <li><a href="/measurement">Tomar Medidas</a></li>
+                        <li><a href="/fitting">Probar Ropa</a></li>
+                        <li><a href="/about">Cómo Funciona</a></li>
+                        <li><a href="/brands">Marcas Compatibles</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Soporte</h3>
+                    <ul class="footer-links">
+                        <li><a href="/faq">Preguntas Frecuentes</a></li>
+                        <li><a href="/contact">Contacto</a></li>
+                        <li><a href="/help">Ayuda</a></li>
+                        <li><a href="/privacy">Política de Privacidad</a></li>
+                        <li><a href="/terms">Términos de Uso</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Contacto</h3>
+                    <address class="contact-info">
+                        <p><i class="fas fa-map-marker-alt"></i> Calle Principal 123, Ciudad</p>
+                        <p><i class="fas fa-phone-alt"></i> +34 912 345 678</p>
+                        <p><i class="fas fa-envelope"></i> info@virtualfitting.com</p>
+                    </address>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 Virtual Fitting Room. Todos los derechos reservados.</p>
+                <div class="language-selector">
+                    <select id="language-selector">
+                        <option value="es">Español</option>
+                        <option value="en">English</option>
+                        <option value="fr">Français</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <script src="/static/js/app.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,101 @@
+{
+    "human_segmentation": {
+      "model_info": {
+        "name": "HumanSegmentationModel",
+        "version": "1.2.0",
+        "description": "Modelo para segmentar personas en imágenes",
+        "framework": "TensorFlow",
+        "format": "SavedModel",
+        "input_size": [512, 512],
+        "channels": 3,
+        "output_format": "mask"
+      },
+      "inference_config": {
+        "device": "auto",
+        "num_threads": 4,
+        "enable_acceleration": true,
+        "batch_size": 1,
+        "confidence_threshold": 0.7,
+        "iou_threshold": 0.5
+      },
+      "post_processing": {
+        "apply_morphology": true,
+        "morph_kernel_size": 3,
+        "morph_iterations": 2,
+        "apply_blur": true,
+        "blur_kernel_size": [5, 5],
+        "edge_refinement": true
+      }
+    },
+    "clothing_segmentation": {
+      "model_info": {
+        "name": "ClothingSegmentationModel",
+        "version": "1.0.0",
+        "description": "Modelo para segmentar prendas de ropa",
+        "framework": "TensorFlow Lite",
+        "format": "TFLite",
+        "input_size": [256, 256],
+        "channels": 3,
+        "output_format": "multiclass_mask"
+      },
+      "class_mapping": {
+        "0": "background",
+        "1": "upper_body",
+        "2": "lower_body",
+        "3": "dress",
+        "4": "outerwear",
+        "5": "footwear",
+        "6": "accessories"
+      },
+      "inference_config": {
+        "device": "auto",
+        "num_threads": 4,
+        "enable_acceleration": true,
+        "batch_size": 1,
+        "confidence_threshold": 0.6
+      },
+      "post_processing": {
+        "apply_morphology": true,
+        "morph_kernel_size": 5,
+        "morph_iterations": 1,
+        "apply_blur": true,
+        "blur_kernel_size": [3, 3],
+        "ignore_small_regions": true,
+        "min_region_size": 500
+      }
+    },
+    "segmentation_pipeline": {
+      "apply_human_first": true,
+      "roi_expansion": 1.1,
+      "use_tracking": true,
+      "tracking_threshold": 0.8,
+      "temporal_smoothing": true,
+      "smoothing_factor": 0.7
+    },
+    "visualization": {
+      "human_mask_color": [0, 0, 255, 128],
+      "clothing_colors": {
+        "upper_body": [255, 0, 0, 180],
+        "lower_body": [0, 255, 0, 180],
+        "dress": [255, 0, 255, 180],
+        "outerwear": [0, 255, 255, 180],
+        "footwear": [255, 255, 0, 180],
+        "accessories": [128, 128, 128, 180]
+      },
+      "show_boundaries": true,
+      "boundary_thickness": 2,
+      "boundary_color": [255, 255, 255, 255],
+      "show_labels": true,
+      "label_font_scale": 0.5,
+      "label_thickness": 1,
+      "blend_alpha": 0.7
+    },
+    "augmentation_options": {
+      "enabled": true,
+      "flip_horizontal": true,
+      "rotate_max": 15,
+      "scale_range": [0.9, 1.1],
+      "brightness_range": [0.8, 1.2],
+      "contrast_range": [0.8, 1.2]
+    }
+  }
