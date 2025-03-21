@@ -1,0 +1,281 @@
+{
+    "img_00001": {
+      "file_name": "img_00001.jpg",
+      "width": 640,
+      "height": 480,
+      "keypoints": [
+        220, 120, 2,  // 0: Nariz
+        210, 110, 2,  // 1: Ojo izquierdo
+        230, 110, 2,  // 2: Ojo derecho
+        200, 115, 2,  // 3: Oreja izquierda
+        240, 115, 2,  // 4: Oreja derecha
+        190, 180, 2,  // 5: Hombro izquierdo
+        250, 180, 2,  // 6: Hombro derecho
+        160, 240, 2,  // 7: Codo izquierdo
+        280, 240, 2,  // 8: Codo derecho
+        140, 290, 2,  // 9: Muñeca izquierda
+        300, 290, 2,  // 10: Muñeca derecha
+        190, 300, 2,  // 11: Cadera izquierda
+        250, 300, 2,  // 12: Cadera derecha
+        185, 380, 2,  // 13: Rodilla izquierda
+        255, 380, 2,  // 14: Rodilla derecha
+        180, 450, 2,  // 15: Tobillo izquierdo
+        260, 450, 2   // 16: Tobillo derecho
+      ],
+      "bbox": [140, 100, 160, 360],
+      "category": "person",
+      "pose_type": "standing"
+    },
+    
+    "img_00002": {
+      "file_name": "img_00002.jpg",
+      "width": 640,
+      "height": 480,
+      "keypoints": [
+        310, 130, 2,  // 0: Nariz
+        300, 120, 2,  // 1: Ojo izquierdo
+        320, 120, 2,  // 2: Ojo derecho
+        290, 125, 2,  // 3: Oreja izquierda
+        330, 125, 2,  // 4: Oreja derecha
+        280, 190, 2,  // 5: Hombro izquierdo
+        340, 190, 2,  // 6: Hombro derecho
+        250, 220, 2,  // 7: Codo izquierdo
+        370, 220, 2,  // 8: Codo derecho
+        240, 260, 2,  // 9: Muñeca izquierda
+        380, 260, 2,  // 10: Muñeca derecha
+        290, 310, 2,  // 11: Cadera izquierda
+        330, 310, 2,  // 12: Cadera derecha
+        285, 390, 2,  // 13: Rodilla izquierda
+        335, 390, 2,  // 14: Rodilla derecha
+        280, 460, 2,  // 15: Tobillo izquierdo
+        340, 460, 2   // 16: Tobillo derecho
+      ],
+      "bbox": [240, 110, 150, 360],
+      "category": "person",
+      "pose_type": "standing"
+    },
+    
+    "img_00003": {
+      "file_name": "img_00003.jpg",
+      "width": 640,
+      "height": 480,
+      "keypoints": [
+        380, 150, 2,  // 0: Nariz
+        370, 140, 2,  // 1: Ojo izquierdo
+        390, 140, 2,  // 2: Ojo derecho
+        360, 145, 2,  // 3: Oreja izquierda
+        400, 145, 1,  // 4: Oreja derecha (parcialmente visible)
+        350, 210, 2,  // 5: Hombro izquierdo
+        410, 210, 2,  // 6: Hombro derecho
+        315, 200, 2,  // 7: Codo izquierdo
+        445, 200, 1,  // 8: Codo derecho (parcialmente visible)
+        290, 185, 2,  // 9: Muñeca izquierda
+        475, 185, 0,  // 10: Muñeca derecha (no visible)
+        360, 300, 2,  // 11: Cadera izquierda
+        400, 300, 2,  // 12: Cadera derecha
+        355, 370, 2,  // 13: Rodilla izquierda
+        405, 370, 2,  // 14: Rodilla derecha
+        350, 440, 2,  // 15: Tobillo izquierdo
+        410, 440, 2   // 16: Tobillo derecho
+      ],
+      "bbox": [290, 140, 185, 310],
+      "category": "person",
+      "pose_type": "profile"
+    },
+    
+    "img_00004": {
+      "file_name": "img_00004.jpg",
+      "width": 720,
+      "height": 540,
+      "keypoints": [
+        350, 130, 2,  // 0: Nariz
+        340, 120, 2,  // 1: Ojo izquierdo
+        360, 120, 2,  // 2: Ojo derecho
+        330, 125, 2,  // 3: Oreja izquierda
+        370, 125, 2,  // 4: Oreja derecha
+        320, 200, 2,  // 5: Hombro izquierdo
+        380, 200, 2,  // 6: Hombro derecho
+        290, 280, 2,  // 7: Codo izquierdo
+        410, 280, 2,  // 8: Codo derecho
+        270, 350, 2,  // 9: Muñeca izquierda
+        430, 350, 2,  // 10: Muñeca derecha
+        320, 350, 2,  // 11: Cadera izquierda
+        380, 350, 2,  // 12: Cadera derecha
+        310, 440, 2,  // 13: Rodilla izquierda
+        390, 440, 2,  // 14: Rodilla derecha
+        300, 520, 2,  // 15: Tobillo izquierdo
+        400, 520, 2   // 16: Tobillo derecho
+      ],
+      "bbox": [270, 120, 170, 410],
+      "category": "person",
+      "pose_type": "standing"
+    },
+    
+    "img_00005": {
+      "file_name": "img_00005.jpg",
+      "width": 640,
+      "height": 480,
+      "keypoints": [
+        320, 220, 2,  // 0: Nariz
+        310, 210, 2,  // 1: Ojo izquierdo
+        330, 210, 2,  // 2: Ojo derecho
+        300, 215, 1,  // 3: Oreja izquierda (parcialmente visible)
+        340, 215, 2,  // 4: Oreja derecha
+        300, 280, 2,  // 5: Hombro izquierdo
+        340, 280, 2,  // 6: Hombro derecho
+        335, 340, 2,  // 7: Codo izquierdo
+        305, 340, 2,  // 8: Codo derecho
+        360, 390, 2,  // 9: Muñeca izquierda
+        280, 390, 2,  // 10: Muñeca derecha
+        300, 370, 2,  // 11: Cadera izquierda
+        340, 370, 2,  // 12: Cadera derecha
+        0, 0, 0,     // 13: Rodilla izquierda (no visible, fuera de la imagen)
+        0, 0, 0,     // 14: Rodilla derecha (no visible, fuera de la imagen)
+        0, 0, 0,     // 15: Tobillo izquierdo (no visible, fuera de la imagen)
+        0, 0, 0      // 16: Tobillo derecho (no visible, fuera de la imagen)
+      ],
+      "bbox": [280, 210, 100, 190],
+      "category": "person",
+      "pose_type": "sitting"
+    },
+    
+    "img_00006": {
+      "file_name": "img_00006.jpg",
+      "width": 720,
+      "height": 540,
+      "keypoints": [
+        360, 160, 2,  // 0: Nariz
+        350, 150, 2,  // 1: Ojo izquierdo
+        370, 150, 2,  // 2: Ojo derecho
+        340, 155, 2,  // 3: Oreja izquierda
+        380, 155, 2,  // 4: Oreja derecha
+        330, 220, 2,  // 5: Hombro izquierdo
+        390, 220, 2,  // 6: Hombro derecho
+        280, 260, 2,  // 7: Codo izquierdo
+        440, 260, 2,  // 8: Codo derecho
+        240, 230, 2,  // 9: Muñeca izquierda
+        480, 230, 2,  // 10: Muñeca derecha
+        330, 320, 2,  // 11: Cadera izquierda
+        390, 320, 2,  // 12: Cadera derecha
+        320, 400, 2,  // 13: Rodilla izquierda
+        400, 400, 2,  // 14: Rodilla derecha
+        310, 480, 2,  // 15: Tobillo izquierdo
+        410, 480, 2   // 16: Tobillo derecho
+      ],
+      "bbox": [240, 150, 240, 340],
+      "category": "person",
+      "pose_type": "t-pose"
+    },
+    
+    "img_00007": {
+      "file_name": "img_00007.jpg",
+      "width": 640,
+      "height": 480,
+      "keypoints": [
+        280, 240, 2,  // 0: Nariz
+        270, 230, 2,  // 1: Ojo izquierdo
+        290, 230, 2,  // 2: Ojo derecho
+        260, 235, 1,  // 3: Oreja izquierda (parcialmente visible)
+        300, 235, 1,  // 4: Oreja derecha (parcialmente visible)
+        250, 270, 2,  // 5: Hombro izquierdo
+        310, 270, 2,  // 6: Hombro derecho
+        200, 270, 2,  // 7: Codo izquierdo
+        360, 270, 2,  // 8: Codo derecho
+        160, 310, 2,  // 9: Muñeca izquierda
+        400, 310, 2,  // 10: Muñeca derecha
+        270, 350, 2,  // 11: Cadera izquierda
+        290, 350, 2,  // 12: Cadera derecha
+        250, 400, 2,  // 13: Rodilla izquierda
+        310, 400, 2,  // 14: Rodilla derecha
+        245, 455, 2,  // 15: Tobillo izquierdo
+        315, 455, 2   // 16: Tobillo derecho
+      ],
+      "bbox": [160, 230, 240, 235],
+      "category": "person",
+      "pose_type": "arms_extended"
+    },
+    
+    "img_00008": {
+      "file_name": "img_00008.jpg",
+      "width": 720,
+      "height": 540,
+      "keypoints": [
+        320, 150, 2,  // 0: Nariz
+        310, 140, 2,  // 1: Ojo izquierdo
+        330, 140, 2,  // 2: Ojo derecho
+        300, 145, 2,  // 3: Oreja izquierda
+        340, 145, 2,  // 4: Oreja derecha
+        290, 200, 2,  // 5: Hombro izquierdo
+        350, 200, 2,  // 6: Hombro derecho
+        240, 240, 2,  // 7: Codo izquierdo
+        400, 240, 2,  // 8: Codo derecho
+        180, 280, 2,  // 9: Muñeca izquierda
+        460, 280, 2,  // 10: Muñeca derecha
+        290, 300, 2,  // 11: Cadera izquierda
+        350, 300, 2,  // 12: Cadera derecha
+        270, 400, 2,  // 13: Rodilla izquierda
+        370, 400, 2,  // 14: Rodilla derecha
+        260, 500, 2,  // 15: Tobillo izquierdo
+        380, 500, 2   // 16: Tobillo derecho
+      ],
+      "bbox": [180, 140, 280, 370],
+      "category": "person",
+      "pose_type": "standing_arms_out"
+    },
+    
+    "img_00009": {
+      "file_name": "img_00009.jpg",
+      "width": 640,
+      "height": 480,
+      "keypoints": [
+        300, 200, 2,  // 0: Nariz
+        290, 190, 2,  // 1: Ojo izquierdo
+        310, 190, 2,  // 2: Ojo derecho
+        280, 195, 2,  // 3: Oreja izquierda
+        320, 195, 2,  // 4: Oreja derecha
+        270, 250, 2,  // 5: Hombro izquierdo
+        330, 250, 2,  // 6: Hombro derecho
+        270, 310, 2,  // 7: Codo izquierdo
+        330, 310, 2,  // 8: Codo derecho
+        270, 370, 2,  // 9: Muñeca izquierda
+        330, 370, 2,  // 10: Muñeca derecha
+        285, 340, 2,  // 11: Cadera izquierda
+        315, 340, 2,  // 12: Cadera derecha
+        285, 410, 2,  // 13: Rodilla izquierda
+        315, 410, 2,  // 14: Rodilla derecha
+        285, 470, 2,  // 15: Tobillo izquierdo
+        315, 470, 2   // 16: Tobillo derecho
+      ],
+      "bbox": [270, 190, 60, 280],
+      "category": "person",
+      "pose_type": "standing_arms_down"
+    },
+    
+    "img_00010": {
+      "file_name": "img_00010.jpg",
+      "width": 720,
+      "height": 540,
+      "keypoints": [
+        380, 140, 2,  // 0: Nariz
+        370, 130, 2,  // 1: Ojo izquierdo
+        390, 130, 2,  // 2: Ojo derecho
+        360, 135, 2,  // 3: Oreja izquierda
+        400, 135, 2,  // 4: Oreja derecha
+        350, 190, 2,  // 5: Hombro izquierdo
+        410, 190, 2,  // 6: Hombro derecho
+        350, 250, 2,  // 7: Codo izquierdo
+        410, 250, 2,  // 8: Codo derecho
+        350, 310, 2,  // 9: Muñeca izquierda
+        410, 310, 2,  // 10: Muñeca derecha
+        360, 300, 2,  // 11: Cadera izquierda
+        400, 300, 2,  // 12: Cadera derecha
+        360, 370, 2,  // 13: Rodilla izquierda
+        400, 370, 1,  // 14: Rodilla derecha (parcialmente visible)
+        360, 440, 2,  // 15: Tobillo izquierdo
+        400, 440, 0   // 16: Tobillo derecho (no visible)
+      ],
+      "bbox": [350, 130, 60, 310],
+      "category": "person",
+      "pose_type": "standing_side"
+    }
+  }
