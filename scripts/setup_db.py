@@ -21,19 +21,15 @@ import sys
 import json
 import argparse
 import sqlite3
-import hashlib
-import datetime
+from werkzeug.security import generate_password_hash
 from pathlib import Path
 
 # Agregar directorio raíz al path para importar módulos del proyecto
 ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(ROOT_DIR))
 
-# Importar módulos del proyecto
-from database.db import get_db_connection, DB_PATH
-
 # Configuración
-DEFAULT_DB_PATH = DB_PATH
+DEFAULT_DB_PATH = str(ROOT_DIR / "data" / "virtual_fitting.db")
 TABLES_SCHEMA_PATH = ROOT_DIR / "database" / "schema.sql"
 SAMPLE_DATA_PATH = ROOT_DIR / "data" / "references"
 
@@ -292,7 +288,7 @@ def load_sample_data(conn):
     
     for user in users:
         # Hash de contraseña simple (en producción usar bcrypt o similar)
-        password_hash = hashlib.sha256(user["password"].encode()).hexdigest()
+        password_hash = generate_password_hash(user["password"])
         
         cursor.execute(
             '''
@@ -348,22 +344,37 @@ def load_sample_data(conn):
     
     # Cargar tablas específicas de marcas
     for brand_name in ["zara", "hm", "levis"]:
-        if brand_name.title() not in brand_ids:
+        if brand_name.title() not in brand_ids and brand_name != "levis":
             continue
         
         try:
             with open(SAMPLE_DATA_PATH / f"size_charts/{brand_name}.json", "r") as f:
                 brand_data = json.load(f)
                 
-                for gender, categories in brand_data.items():
+                gender_categories = brand_data.get("gender_categories", {})
+                for gender, categories in gender_categories.items():
+                    # Mapear nombres de género
+                    db_gender = gender
+                    if gender == "men":
+                        db_gender = "male"
+                    elif gender == "women":
+                        db_gender = "female"
+                    
+                    if db_gender not in ('male', 'female', 'unisex'):
+                        continue  # Omitir géneros no soportados por la restricción de la BD
+                        
                     for category, data in categories.items():
+                        brand_key = brand_name.title()
+                        if brand_name == "levis":
+                            brand_key = "Levi's"
+                            
                         cursor.execute(
                             '''
                             INSERT OR REPLACE INTO size_charts 
                             (brand_id, gender, category, chart_data)
                             VALUES (?, ?, ?, ?)
                             ''',
-                            (brand_ids[brand_name.title()], gender, category, json.dumps(data))
+                            (brand_ids[brand_key], db_gender, category, json.dumps(data))
                         )
         except FileNotFoundError:
             print(f"Advertencia: No se encontró la tabla de tallas para {brand_name}")

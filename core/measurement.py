@@ -4,11 +4,20 @@ Implementa algoritmos para determinar medidas como contorno de pecho,
 cintura, cadera, longitud de brazos y piernas, etc.
 """
 
-import numpy as np
+
 import math
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, Optional
 import json
 import os
+
+
+class MeasurementResult(dict):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.landmarks = {}
+        
+    def to_dict(self):
+        return self
 
 
 class MeasurementCalculator:
@@ -18,16 +27,69 @@ class MeasurementCalculator:
     obtener medidas precisas en centímetros.
     """
 
-    def __init__(self, calibration_file: str = 'data/references/calibration.json'):
+    def __init__(self, calibration_file: str = 'data/references/calibration.json', reference_height_cm: float = 170.0):
         """
         Inicializa el calculador de medidas.
 
         Args:
             calibration_file: Ruta al archivo de calibración con factores de conversión
+            reference_height_cm: Altura de referencia en centímetros
         """
         self.calibration_data = self._load_calibration(calibration_file)
-        self.reference_height_cm = 170.0  # Altura de referencia en cm
+        self.reference_height_cm = reference_height_cm  # Altura de referencia en cm
         self.pixel_to_cm_ratio = 1.0  # Ratio de conversión inicial
+
+    def calculate_measurements(self, image: any, landmarks: Dict[str, Dict[str, float]], gender: str = "neutral", height_cm: Optional[float] = None) -> MeasurementResult:
+        """Wrapper de compatibilidad para calcular medidas recibiendo la imagen como primer parámetro (para app.py)."""
+        res_dict = self.calculate_all_measurements(landmarks, gender, height_cm)
+        result = MeasurementResult(res_dict)
+        result.landmarks = landmarks
+        return result
+
+    def visualize_measurements(self, image, measurements):
+        """Dibuja las líneas de medición y etiquetas sobre la imagen corporal."""
+        import cv2
+        vis_img = image.copy()
+        landmarks = getattr(measurements, 'landmarks', {})
+        if not landmarks:
+            return vis_img
+            
+        # Dibujar líneas de medidas principales si los landmarks existen
+        # Hombros
+        if "left_shoulder" in landmarks and "right_shoulder" in landmarks:
+            pt1 = (int(landmarks["left_shoulder"]["x"]), int(landmarks["left_shoulder"]["y"]))
+            pt2 = (int(landmarks["right_shoulder"]["x"]), int(landmarks["right_shoulder"]["y"]))
+            cv2.line(vis_img, pt1, pt2, (255, 0, 0), 2)
+            cv2.putText(vis_img, f"Hombros: {measurements.get('shoulder_width', 0):.1f}cm", 
+                        (pt1[0], pt1[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1)
+                        
+        # Pecho
+        if "left_shoulder" in landmarks and "left_hip" in landmarks and "right_shoulder" in landmarks:
+            chest_y = int((landmarks["left_shoulder"]["y"] + landmarks["left_hip"]["y"]) * 0.4 + landmarks["left_shoulder"]["y"] * 0.6)
+            pt1 = (int(landmarks["left_shoulder"]["x"]), chest_y)
+            pt2 = (int(landmarks["right_shoulder"]["x"]), chest_y)
+            cv2.line(vis_img, pt1, pt2, (0, 255, 0), 2)
+            cv2.putText(vis_img, f"Pecho: {measurements.get('chest', 0):.1f}cm", 
+                        (pt1[0], pt1[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+
+        # Cintura
+        if "left_shoulder" in landmarks and "left_hip" in landmarks and "right_hip" in landmarks:
+            waist_y = int((landmarks["left_shoulder"]["y"] + landmarks["left_hip"]["y"]) * 0.75 + landmarks["left_shoulder"]["y"] * 0.25)
+            pt1 = (int(landmarks["left_hip"]["x"]), waist_y)
+            pt2 = (int(landmarks["right_hip"]["x"]), waist_y)
+            cv2.line(vis_img, pt1, pt2, (0, 0, 255), 2)
+            cv2.putText(vis_img, f"Cintura: {measurements.get('waist', 0):.1f}cm", 
+                        (pt1[0], pt1[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+
+        # Caderas
+        if "left_hip" in landmarks and "right_hip" in landmarks:
+            pt1 = (int(landmarks["left_hip"]["x"]), int(landmarks["left_hip"]["y"]))
+            pt2 = (int(landmarks["right_hip"]["x"]), int(landmarks["right_hip"]["y"]))
+            cv2.line(vis_img, pt1, pt2, (255, 255, 0), 2)
+            cv2.putText(vis_img, f"Cadera: {measurements.get('hip', 0):.1f}cm", 
+                        (pt1[0], pt1[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 0), 1)
+
+        return vis_img
         
     def _load_calibration(self, calibration_file: str) -> Dict:
         """
@@ -262,11 +324,7 @@ class MeasurementCalculator:
             Contorno de cintura en centímetros
         """
         if "left_hip" in landmarks and "right_hip" in landmarks:
-            # Estimar la posición de la cintura (punto medio entre hombros y caderas)
-            left_shoulder_y = landmarks["left_shoulder"]["y"]
-            left_hip_y = landmarks["left_hip"]["y"]
-            waist_y = left_shoulder_y + (left_hip_y - left_shoulder_y) * 0.4
-            
+                        
             # Estimar el ancho de la cintura
             hip_width_px = self._distance(landmarks["left_hip"], landmarks["right_hip"])
             waist_width_px = hip_width_px * 0.9  # La cintura suele ser un 90% del ancho de cadera
@@ -420,17 +478,6 @@ class MeasurementCalculator:
             Contorno de muslo en centímetros
         """
         if "left_hip" in landmarks and "left_knee" in landmarks:
-            # Estimar el ancho del muslo (a un tercio de distancia entre cadera y rodilla)
-            hip_to_knee_vector = {
-                "x": landmarks["left_knee"]["x"] - landmarks["left_hip"]["x"],
-                "y": landmarks["left_knee"]["y"] - landmarks["left_hip"]["y"]
-            }
-            
-            thigh_point = {
-                "x": landmarks["left_hip"]["x"] + hip_to_knee_vector["x"] * 0.33,
-                "y": landmarks["left_hip"]["y"] + hip_to_knee_vector["y"] * 0.33
-            }
-            
             # Estimar el ancho del muslo basado en la distancia de las caderas
             if "right_hip" in landmarks:
                 hip_width_px = self._distance(landmarks["left_hip"], landmarks["right_hip"])
@@ -474,8 +521,8 @@ class MeasurementCalculator:
             # Buscar en la tabla de tallas correspondiente
             shirt_sizes = size_chart.get("shirts", {}).get(gender, {})
             for size_name, size_range in shirt_sizes.items():
-                if (size_range["chest_min"] <= chest <= size_range["chest_max"] and
-                    size_range["shoulder_min"] <= shoulder <= size_range["shoulder_max"]):
+                if (size_range["chest_min"] <= chest <= size_range["chest_max"]
+                        and size_range["shoulder_min"] <= shoulder <= size_range["shoulder_max"]):
                     sizes["shirt"] = size_name
                     break
             
@@ -500,13 +547,13 @@ class MeasurementCalculator:
         if "waist" in measurements and "hip" in measurements and "inseam" in measurements:
             waist = measurements["waist"]
             hip = measurements["hip"]
-            inseam = measurements["inseam"]
+
             
             # Buscar en la tabla de tallas correspondiente
             pant_sizes = size_chart.get("pants", {}).get(gender, {})
             for size_name, size_range in pant_sizes.items():
-                if (size_range["waist_min"] <= waist <= size_range["waist_max"] and
-                    size_range["hip_min"] <= hip <= size_range["hip_max"]):
+                if (size_range["waist_min"] <= waist <= size_range["waist_max"]
+                        and size_range["hip_min"] <= hip <= size_range["hip_max"]):
                     sizes["pants"] = size_name
                     break
             

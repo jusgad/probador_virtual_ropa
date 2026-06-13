@@ -134,37 +134,49 @@
                     <div class="results-column fit-analysis">
                         <!-- Recomendación de talla -->
                         <div id="size-recommendation" class="size-recommendation">
-                            <h2>Talla Recomendada</h2>
+                            <h2>Talla Recomendada (Camiseta)</h2>
+                            {% if shirt_size and not shirt_size.error %}
                             <div class="recommendation-content">
-                                <div class="recommended-size">L</div>
+                                <div class="recommended-size">{{ shirt_size.recommended_size }}</div>
                                 <div class="size-score">
                                     <div class="score-bar">
-                                        <div class="score-fill" style="width: 85%"></div>
+                                        <div class="score-fill" style="width: {{ (shirt_size.fit_score * 100) }}%"></div>
                                     </div>
-                                    <div class="score-label">85% de ajuste</div>
+                                    <div class="score-label">{{ (shirt_size.fit_score * 100)|round|int }}% de ajuste</div>
                                 </div>
                                 <div class="fit-description regular">
                                     <i class="fas fa-check-circle"></i>
-                                    Esta talla te quedará bien
+                                    Nivel de ajuste calculado: {{ shirt_size.fit_quality }}
                                 </div>
                             </div>
                             
-                            <!-- Tallas alternativas -->
-                            <div class="size-alternatives">
-                                <h3>Tallas Alternativas</h3>
-                                <div class="alternatives-grid">
-                                    <div class="alternative-size">
-                                        <div class="size-label">M</div>
-                                        <div class="fit-type tight">Ajustado</div>
-                                        <div class="alt-score">78%</div>
+                            <!-- Equivalencias Mundiales (Internacionalización) -->
+                            {% if shirt_size.international_sizes %}
+                            <div class="worldwide-sizes" style="margin-top: 20px; background: #eef2f5; padding: 15px; border-radius: 8px;">
+                                <h3 style="font-size: 1.1rem; color: #333; margin-bottom: 10px;"><i class="fas fa-globe"></i> Estandarización Global</h3>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 10px; text-align: center;">
+                                    {% for region, size in shirt_size.international_sizes.items() %}
+                                    <div style="background: #fff; border: 1px solid #ccc; padding: 10px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                                        <strong style="display: block; font-size: 0.8em; color: #666;">{{ region }}</strong>
+                                        <span style="font-weight: 700; font-size: 1.1em; color: #111;">{{ size }}</span>
                                     </div>
-                                    <div class="alternative-size">
-                                        <div class="size-label">XL</div>
-                                        <div class="fit-type loose">Holgado</div>
-                                        <div class="alt-score">72%</div>
-                                    </div>
+                                    {% endfor %}
                                 </div>
                             </div>
+                            {% endif %}
+                            
+                            <!-- Recomendaciones textuales -->
+                            {% if shirt_size.recommendations %}
+                            <div style="margin-top: 15px; padding: 10px; background: #fff3cd; border-left: 4px solid #ffc107; color: #856404;">
+                                <i class="fas fa-info-circle"></i> {{ shirt_size.recommendations }}
+                            </div>
+                            {% endif %}
+                            
+                            {% else %}
+                            <div class="recommendation-content">
+                                <p>No se pudo calcular la talla de camisa recomendada. Asegúrate de tomar bien o recalcular tus medidas.</p>
+                            </div>
+                            {% endif %}
                         </div>
                         
                         <!-- Análisis detallado de ajuste -->

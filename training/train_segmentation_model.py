@@ -5,22 +5,19 @@ Este módulo implementa la funcionalidad para entrenar un modelo
 de deep learning que segmenta las prendas de ropa en imágenes.
 """
 
-import os
 import json
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.layers import Input, Conv2D, BatchNormalization, Activation
-from tensorflow.keras.layers import UpSampling2D, Concatenate, Conv2DTranspose, Dropout
+from tensorflow.keras.layers import Concatenate, Conv2DTranspose, Dropout
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau, TensorBoard
 from tensorflow.keras.optimizers import Adam
 import matplotlib.pyplot as plt
-import cv2
 import logging
 from pathlib import Path
 from datetime import datetime
-from tqdm import tqdm
 
 class SegmentationModelTrainer:
     """
@@ -262,12 +259,6 @@ class SegmentationModelTrainer:
         
         # Decoder blocks con skip connections
         for i in range(len(skips)-2, -1, -1):
-            # Calcular el factor de escala
-            if i >= 3:  # Para las capas más pequeñas
-                up_size = (2, 2)
-            else:  # Para las capas más grandes
-                up_size = (2, 2)
-            
             # Upsampling
             x = Conv2DTranspose(
                 filters=256 if i > 2 else 128,

@@ -6,9 +6,8 @@ medidas del usuario y las tablas de tallas de diferentes marcas.
 
 import json
 import os
-import math
-import numpy as np
-from typing import Dict, List, Tuple, Optional, Any, Union
+
+from typing import Dict, List, Any
 import logging
 
 
@@ -146,14 +145,63 @@ class SizeRecommender:
         
         # Llamar al método específico según el tipo de ropa
         if clothing_type == "shirts":
-            return self._recommend_shirt_size(measurements, size_table)
+            result = self._recommend_shirt_size(measurements, size_table)
         elif clothing_type == "pants":
-            return self._recommend_pants_size(measurements, size_table)
+            result = self._recommend_pants_size(measurements, size_table)
         elif clothing_type == "dresses":
-            return self._recommend_dress_size(measurements, size_table)
+            result = self._recommend_dress_size(measurements, size_table)
         else:
             # Método genérico para otros tipos de ropa
-            return self._recommend_generic_size(measurements, size_table)
+            result = self._recommend_generic_size(measurements, size_table)
+            
+        # Añadir estandarización global (US, EU, UK, LATAM, ASIA)
+        if "error" not in result and "recommended_size" in result:
+            result["international_sizes"] = self._get_international_sizes(result["recommended_size"], clothing_type)
+            
+        return result
+        
+    def _get_international_sizes(self, base_size: str, clothing_type: str) -> Dict[str, str]:
+        """
+        Determina las tallas equivalentes para distintas regiones (Internacionalización).
+        """
+        base_size = base_size.upper() if isinstance(base_size, str) else str(base_size)
+        
+        # Mapping global para Tops (camisas, camisetas, abrigos)
+        tops_mapping = {
+            "XS": {"US": "XS (34)", "EU": "44", "UK": "34", "ASIA": "M", "LATAM": "XS"},
+            "S": {"US": "S (36)", "EU": "46", "UK": "36", "ASIA": "L", "LATAM": "S"},
+            "M": {"US": "M (38-40)", "EU": "48-50", "UK": "38-40", "ASIA": "XL", "LATAM": "M"},
+            "L": {"US": "L (42)", "EU": "52", "UK": "42", "ASIA": "XXL", "LATAM": "L"},
+            "XL": {"US": "XL (44)", "EU": "54", "UK": "44", "ASIA": "3XL", "LATAM": "XL"},
+            "XXL": {"US": "XXL (46-48)", "EU": "56-58", "UK": "46", "ASIA": "4XL", "LATAM": "XXL"},
+            "3XL": {"US": "3XL (50)", "EU": "60", "UK": "48", "ASIA": "5XL", "LATAM": "3XL"}
+        }
+        
+        # Mapping global para Bottoms (pantalones, shorts basados en cintura en pulgadas)
+        bottoms_mapping = {
+            "28": {"US": "28", "EU": "44", "UK": "28", "ASIA": "M (30)", "LATAM": "8 / 28"},
+            "30": {"US": "30", "EU": "46", "UK": "30", "ASIA": "L (32)", "LATAM": "10 / 30"},
+            "32": {"US": "32", "EU": "48", "UK": "32", "ASIA": "XL (34)", "LATAM": "12 / 32"},
+            "34": {"US": "34", "EU": "50", "UK": "34", "ASIA": "XXL (36)", "LATAM": "14 / 34"},
+            "36": {"US": "36", "EU": "52", "UK": "36", "ASIA": "3XL (38)", "LATAM": "16 / 36"},
+            "38": {"US": "38", "EU": "54", "UK": "38", "ASIA": "4XL (40)", "LATAM": "18 / 38"},
+            "40": {"US": "40", "EU": "56", "UK": "40", "ASIA": "5XL (42)", "LATAM": "20 / 40"},
+            "42": {"US": "42", "EU": "58", "UK": "42", "ASIA": "6XL (44)", "LATAM": "22 / 42"}
+        }
+        
+        if clothing_type in ["shirts", "dresses", "jackets", "t_shirts", "generic"] and base_size in tops_mapping:
+            return tops_mapping[base_size]
+        elif clothing_type in ["pants", "shorts"] and base_size in bottoms_mapping:
+            return bottoms_mapping[base_size]
+        
+        # Fallback genérico si la talla no coincide
+        return {
+            "US": base_size,
+            "EU": base_size,
+            "UK": base_size,
+            "ASIA": f"Eq. a {base_size}",
+            "LATAM": base_size
+        }
             
     def _recommend_shirt_size(self, measurements: Dict[str, float], size_table: Dict[str, Any]) -> Dict[str, Any]:
         """

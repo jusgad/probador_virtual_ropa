@@ -5,7 +5,6 @@ Este módulo implementa la funcionalidad para entrenar un modelo
 que recomienda tallas de ropa basado en las medidas corporales.
 """
 
-import os
 import json
 import numpy as np
 import pandas as pd
@@ -19,7 +18,7 @@ import logging
 import joblib
 from pathlib import Path
 from datetime import datetime
-from sklearn.preprocessing import StandardScaler, LabelEncoder, OneHotEncoder
+from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.metrics import confusion_matrix, classification_report
 import seaborn as sns
 
@@ -553,7 +552,7 @@ class SizeRecommenderTrainer:
         vis_dir.mkdir(parents=True, exist_ok=True)
         
         # 1. Gráfico de pérdida
-        loss_metrics = [key for key in history.keys() if 'loss' in key and not 'val' in key]
+        loss_metrics = [key for key in history.keys() if 'loss' in key and 'val' not in key]
         val_loss_metrics = [key for key in history.keys() if 'loss' in key and 'val' in key]
         
         plt.figure(figsize=(12, 6))
@@ -575,7 +574,7 @@ class SizeRecommenderTrainer:
         figures.append(loss_path)
         
         # 2. Gráficos de precisión para cada objetivo
-        acc_metrics = [key for key in history.keys() if 'accuracy' in key and not 'val' in key]
+        acc_metrics = [key for key in history.keys() if 'accuracy' in key and 'val' not in key]
         val_acc_metrics = [key for key in history.keys() if 'accuracy' in key and 'val' in key]
         
         plt.figure(figsize=(12, 6))

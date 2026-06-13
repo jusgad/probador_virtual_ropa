@@ -6,10 +6,10 @@ para simular cómo quedaría una prenda en un cuerpo específico.
 
 import cv2
 import numpy as np
-import math
+
 from typing import Dict, List, Tuple, Optional
 import os
-from utils.image_utils import overlay_images, resize_image_to_height, warp_image
+from utils.image_utils import overlay_images
 
 
 class ClothingFitter:
@@ -246,8 +246,9 @@ class ClothingFitter:
         shirt_img = shirt_data["image"].copy()
         shirt_key_points = shirt_data["key_points"]
         
-        # Calcular escala para ajustar al ancho de hombros
         original_width = abs(shirt_key_points["left_shoulder"][0] - shirt_key_points["right_shoulder"][0])
+        if original_width == 0:
+            original_width = 1.0
         scale_factor = shoulder_width / original_width
         
         # Escalar la camisa manteniendo la proporción
@@ -317,14 +318,15 @@ class ClothingFitter:
             
         # Obtener dimensiones corporales
         hip_width = abs(landmarks["left_hip"]["x"] - landmarks["right_hip"]["x"])
-        leg_length = abs(landmarks["left_hip"]["y"] - landmarks["left_ankle"]["y"])
+
         
         # Obtener imagen de los pantalones
         pants_img = pants_data["image"].copy()
         pants_key_points = pants_data["key_points"]
         
-        # Calcular escala para ajustar al ancho de cadera
         original_width = abs(pants_key_points["left_waist"][0] - pants_key_points["right_waist"][0])
+        if original_width == 0:
+            original_width = 1.0
         scale_factor = hip_width / original_width
         
         # Escalar los pantalones manteniendo la proporción

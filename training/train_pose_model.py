@@ -5,21 +5,18 @@ Este módulo implementa la funcionalidad para entrenar un modelo
 de deep learning que detecta landmarks corporales en imágenes.
 """
 
-import os
 import json
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.applications import MobileNetV2
-from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout, Conv2D, Reshape
+from tensorflow.keras.layers import Dense, GlobalAveragePooling2D, Dropout
 from tensorflow.keras.models import Model, load_model
 from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau, TensorBoard
 from tensorflow.keras.optimizers import Adam
 import matplotlib.pyplot as plt
-import cv2
 import logging
 from pathlib import Path
 from datetime import datetime
-from tqdm import tqdm
 
 class PoseModelTrainer:
     """
@@ -469,6 +466,7 @@ class PoseModelTrainer:
         
         # 4. Crear archivo de configuración para el modelo
         config_path = self.model_save_path / 'pose_config.json'
+        standard_model_path = self.model_save_path / 'pose_model_final.h5'
         config = {
             'model_type': 'MobileNetV2',
             'input_size': self.img_size,

@@ -1252,7 +1252,11 @@ class MeasurementUI {
             
             // Redirigir a la página de prueba virtual después de unos segundos
             setTimeout(() => {
-                window.location.href = '/fitting';
+                if (typeof App !== 'undefined' && App.navigateTo) {
+                    App.navigateTo('fitting');
+                } else {
+                    window.location.href = '/fitting';
+                }
             }, 2000);
         } catch (error) {
             console.error('Error al guardar las medidas:', error);

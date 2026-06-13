@@ -132,8 +132,14 @@ class BodyDetector {
             // Cargar el modelo de postura desde MediaPipe
             const vision = await this.loadVisionPackage();
             
+            // Crear el FilesetResolver para tareas de visión
+            const wasmResolver = await vision.FilesetResolver.forVisionTasks(
+                "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
+            );
+            
             // Crear el detector de pose
             this.poseDetector = await vision.PoseLandmarker.createFromOptions(
+                wasmResolver,
                 this.modelConfig
             );
             

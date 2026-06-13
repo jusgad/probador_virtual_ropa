@@ -7,120 +7,221 @@ import sqlite3
 import json
 import os
 import datetime
-from typing import Dict, List, Tuple, Optional, Any, Union
+import threading
+from typing import Dict, List, Any, Optional
 import logging
+from werkzeug.security import generate_password_hash, check_password_hash
 
-
+# Objeto para almacenar la conexión por hilo (Thread-safety)
 class Database:
     """
     Clase para gestionar la conexión a la base de datos.
-    Implementa un patrón Singleton para asegurar una única instancia de conexión.
+    Implementa un patrón Singleton y utiliza thread-local storage para asegurar seguridad en multi-hilo.
     """
     _instance = None
+    _local = threading.local()
     
     def __new__(cls, db_path: str = 'data/virtual_fitting.db'):
         if cls._instance is None:
             cls._instance = super(Database, cls).__new__(cls)
             cls._instance.db_path = db_path
-            cls._instance.connection = None
             cls._instance.logger = logging.getLogger(__name__)
-            cls._instance._initialize()
+            cls._instance._init_db_file()
         return cls._instance
-    
-    def _initialize(self) -> None:
-        """
-        Inicializa la base de datos, creando las tablas si no existen.
-        """
-        try:
-            # Asegurar que el directorio para la BD existe
-            os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
-            
-            # Establecer conexión
-            self.connection = sqlite3.connect(self.db_path)
-            self.connection.row_factory = sqlite3.Row  # Para obtener resultados como diccionarios
-            
-            # Crear tablas si no existen
-            self._create_tables()
-            
-            self.logger.info(f"Base de datos inicializada en {self.db_path}")
-        except Exception as e:
-            self.logger.error(f"Error al inicializar la base de datos: {str(e)}")
-            raise
-    
-    def _create_tables(self) -> None:
-        """
-        Crea las tablas necesarias en la base de datos si no existen.
-        """
-        cursor = self.connection.cursor()
         
-        # Tabla de usuarios
+    def _init_db_file(self) -> None:
+        """Inicializa el archivo de base de datos y crea las tablas si no existen."""
+        try:
+            os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
+            # Conexión temporal para crear tablas
+            conn = sqlite3.connect(self.db_path)
+            self._create_tables_with_conn(conn)
+            conn.close()
+            self.logger.info(f"Archivo de base de datos listo en {self.db_path}")
+        except Exception as e:
+            self.logger.error(f"Error al inicializar el archivo de base de datos: {str(e)}")
+            raise
+
+    @property
+    def connection(self) -> sqlite3.Connection:
+        """Obtiene o crea una conexión SQLite específica para el hilo actual."""
+        if not hasattr(self._local, 'connection') or self._local.connection is None:
+            self._local.connection = sqlite3.connect(self.db_path, check_same_thread=False)
+            self._local.connection.row_factory = sqlite3.Row
+        return self._local.connection
+
+    def close_connection(self) -> None:
+        """Cierra la conexión SQLite del hilo actual si está abierta."""
+        if hasattr(self._local, 'connection') and self._local.connection is not None:
+            try:
+                self._local.connection.close()
+            except Exception as e:
+                self.logger.error(f"Error al cerrar conexión de hilo: {e}")
+            finally:
+                self._local.connection = None
+
+    def _create_tables_with_conn(self, conn: sqlite3.Connection) -> None:
+        """Crea las tablas necesarias si no existen."""
+        cursor = conn.cursor()
+        
+        # Tabla de usuarios (esquema alineado con setup_db.py)
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE,
             email TEXT UNIQUE,
             password_hash TEXT,
-            name TEXT,
-            gender TEXT,
+            first_name TEXT,
+            last_name TEXT,
+            gender TEXT CHECK(gender IN ('male', 'female', 'other', 'not_specified')),
             birth_date TEXT,
-            height REAL,
-            weight REAL,
-            created_at TEXT,
+            profile_image TEXT,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
             last_login TEXT
         )
         ''')
         
-        # Tabla de medidas corporales
+        # Tabla de preferencias de usuario
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS measurements (
+        CREATE TABLE IF NOT EXISTS user_preferences (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
-            date TEXT,
+            preferred_fit TEXT DEFAULT 'regular' CHECK(preferred_fit IN ('slim', 'regular', 'loose')),
+            preferred_brands TEXT,
+            preferred_categories TEXT,
+            preferred_colors TEXT,
+            size_region TEXT DEFAULT 'EU' CHECK(size_region IN ('EU', 'US', 'UK', 'INT')),
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+        )
+        ''')
+
+        # Tabla de marcas
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS brands (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE,
+            logo_url TEXT,
+            website TEXT,
+            description TEXT,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+        ''')
+
+        # Tabla de tablas de tallas
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS size_charts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            brand_id INTEGER,
+            gender TEXT CHECK(gender IN ('male', 'female', 'unisex')),
+            category TEXT,
+            chart_data TEXT, -- JSON
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (brand_id) REFERENCES brands(id) ON DELETE CASCADE,
+            UNIQUE (brand_id, gender, category)
+        )
+        ''')
+
+        # Tabla de prendas de ropa (clothing)
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS clothing (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            brand_id INTEGER,
+            category TEXT NOT NULL,
+            subcategory TEXT,
+            type TEXT NOT NULL,
+            gender TEXT CHECK(gender IN ('male', 'female', 'unisex')),
+            description TEXT,
+            color TEXT,
+            material TEXT,
+            price REAL,
+            currency TEXT DEFAULT 'EUR',
+            product_url TEXT,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (brand_id) REFERENCES brands(id) ON DELETE SET NULL
+        )
+        ''')
+
+        # Tabla de imágenes de prendas
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS clothing_images (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            clothing_id INTEGER NOT NULL,
+            image_url TEXT NOT NULL,
+            image_type TEXT DEFAULT 'main' CHECK(image_type IN ('main', 'thumbnail', 'detail', 'back', 'side')),
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (clothing_id) REFERENCES clothing(id) ON DELETE CASCADE
+        )
+        ''')
+
+        # Tabla de tallas de prendas
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS clothing_sizes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            clothing_id INTEGER NOT NULL,
+            size_name TEXT NOT NULL,
+            measurements TEXT NOT NULL, -- JSON
+            stock INTEGER DEFAULT 0,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (clothing_id) REFERENCES clothing(id) ON DELETE CASCADE,
+            UNIQUE (clothing_id, size_name)
+        )
+        ''')
+
+        # Tabla de medidas corporales (user_measurements)
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS user_measurements (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            name TEXT DEFAULT 'Mis medidas',
             height REAL,
             weight REAL,
             chest REAL,
             waist REAL,
-            hip REAL,
-            shoulder_width REAL,
+            hips REAL,
+            shoulders REAL,
             arm_length REAL,
             inseam REAL,
             neck REAL,
-            thigh REAL,
-            raw_data TEXT,  -- JSON con datos completos
-            FOREIGN KEY (user_id) REFERENCES users (id)
+            thigh REAL,  -- Agregado para consistencia con app y repositorios
+            additional_measurements TEXT,
+            front_image TEXT,
+            side_image TEXT,
+            landmarks TEXT,
+            is_current BOOLEAN DEFAULT 1,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
         )
         ''')
-        
-        # Tabla de prendas de ropa
+
+        # Tabla de resultados de ajuste (fitting_results)
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS clothing_items (
+        CREATE TABLE IF NOT EXISTS fitting_results (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            type TEXT,  -- "shirt", "pants", etc.
-            brand TEXT,
-            name TEXT,
-            size TEXT,
-            color TEXT,
-            image_path TEXT,
-            metadata TEXT  -- JSON con datos adicionales
+            user_id INTEGER NOT NULL,
+            clothing_id INTEGER NOT NULL,
+            size_name TEXT NOT NULL,
+            measurement_id INTEGER NOT NULL,
+            fit_score REAL NOT NULL,
+            fit_type TEXT CHECK(fit_type IN ('tight', 'regular', 'loose')),
+            fit_details TEXT, -- JSON
+            preview_image TEXT,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (clothing_id) REFERENCES clothing(id) ON DELETE CASCADE,
+            FOREIGN KEY (measurement_id) REFERENCES user_measurements(id) ON DELETE CASCADE
         )
         ''')
-        
-        # Tabla de pruebas virtuales
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS virtual_fittings (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            measurement_id INTEGER,
-            date TEXT,
-            result_image_path TEXT,
-            clothing_items TEXT,  -- JSON con IDs de prendas
-            fit_scores TEXT,  -- JSON con puntuaciones de ajuste
-            comments TEXT,
-            FOREIGN KEY (user_id) REFERENCES users (id),
-            FOREIGN KEY (measurement_id) REFERENCES measurements (id)
-        )
-        ''')
-        
-        # Tabla de tallas recomendadas
+
+        # Tabla de recomendaciones de talla para compatibilidad con repositorios
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS size_recommendations (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -130,274 +231,245 @@ class Database:
             brand TEXT,
             recommended_size TEXT,
             fit_score REAL,
-            details TEXT,  -- JSON con detalles
+            details TEXT, -- JSON
             date TEXT,
-            FOREIGN KEY (user_id) REFERENCES users (id),
-            FOREIGN KEY (measurement_id) REFERENCES measurements (id)
+            FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+            FOREIGN KEY (measurement_id) REFERENCES user_measurements(id) ON DELETE CASCADE
         )
         ''')
         
-        self.connection.commit()
-    
+        conn.commit()
+
     def get_connection(self) -> sqlite3.Connection:
-        """
-        Obtiene la conexión a la base de datos.
-        
-        Returns:
-            Objeto de conexión a SQLite
-        """
-        if self.connection is None:
-            self._initialize()
+        """Obtiene la conexión a la base de datos."""
         return self.connection
-    
+
     def execute_query(self, query: str, parameters: tuple = ()) -> List[Dict]:
-        """
-        Ejecuta una consulta SELECT y devuelve los resultados.
-        
-        Args:
-            query: Consulta SQL
-            parameters: Parámetros para la consulta
-            
-        Returns:
-            Lista de filas como diccionarios
-        """
+        """Ejecuta una consulta SELECT y devuelve los resultados."""
         try:
-            cursor = self.connection.cursor()
-            cursor.execute(query, parameters)
-            results = [dict(row) for row in cursor.fetchall()]
-            return results
+            with self.connection:
+                cursor = self.connection.cursor()
+                cursor.execute(query, parameters)
+                return [dict(row) for row in cursor.fetchall()]
         except Exception as e:
             self.logger.error(f"Error al ejecutar consulta: {str(e)}")
             self.logger.error(f"Query: {query}, Params: {parameters}")
             raise
-    
+
     def execute_insert(self, query: str, parameters: tuple = ()) -> int:
-        """
-        Ejecuta una consulta INSERT y devuelve el ID generado.
-        
-        Args:
-            query: Consulta SQL
-            parameters: Parámetros para la consulta
-            
-        Returns:
-            ID generado por la operación
-        """
+        """Ejecuta una consulta INSERT y devuelve el ID generado."""
         try:
-            cursor = self.connection.cursor()
-            cursor.execute(query, parameters)
-            self.connection.commit()
-            return cursor.lastrowid
+            with self.connection:
+                cursor = self.connection.cursor()
+                cursor.execute(query, parameters)
+                return cursor.lastrowid
         except Exception as e:
             self.logger.error(f"Error al ejecutar inserción: {str(e)}")
             self.logger.error(f"Query: {query}, Params: {parameters}")
-            self.connection.rollback()
             raise
-    
+
     def execute_update(self, query: str, parameters: tuple = ()) -> int:
-        """
-        Ejecuta una consulta UPDATE o DELETE y devuelve el número de filas afectadas.
-        
-        Args:
-            query: Consulta SQL
-            parameters: Parámetros para la consulta
-            
-        Returns:
-            Número de filas afectadas
-        """
+        """Ejecuta una consulta UPDATE o DELETE y devuelve el número de filas afectadas."""
         try:
-            cursor = self.connection.cursor()
-            cursor.execute(query, parameters)
-            self.connection.commit()
-            return cursor.rowcount
+            with self.connection:
+                cursor = self.connection.cursor()
+                cursor.execute(query, parameters)
+                return cursor.rowcount
         except Exception as e:
             self.logger.error(f"Error al ejecutar actualización: {str(e)}")
             self.logger.error(f"Query: {query}, Params: {parameters}")
-            self.connection.rollback()
             raise
-    
+
     def close(self) -> None:
-        """
-        Cierra la conexión a la base de datos.
-        """
-        if self.connection:
-            self.connection.close()
-            self.connection = None
-            self.logger.info("Conexión a la base de datos cerrada")
+        """Cierra la conexión SQLite del hilo actual."""
+        self.close_connection()
 
 
 class BaseModel:
-    """
-    Clase base para todos los modelos de datos.
-    """
-    
+    """Clase base para todos los modelos de datos."""
     def __init__(self):
         self.id = None
-    
+        
     @classmethod
     def from_row(cls, row: Dict[str, Any]) -> 'BaseModel':
-        """
-        Crea una instancia del modelo a partir de una fila de la base de datos.
-        
-        Args:
-            row: Fila de la base de datos como diccionario
-            
-        Returns:
-            Instancia del modelo
-        """
         instance = cls()
         for key, value in row.items():
             setattr(instance, key, value)
         return instance
-    
+
     def to_dict(self) -> Dict[str, Any]:
-        """
-        Convierte el modelo a un diccionario.
-        
-        Returns:
-            Diccionario con los atributos del modelo
-        """
-        return {key: value for key, value in self.__dict__.items()
-                if not key.startswith('_') and not callable(value)}
+        # Filtrar atributos internos o métodos
+        res = {}
+        for key, value in self.__dict__.items():
+            if key.startswith('_') or callable(value):
+                continue
+            res[key] = value
+        # Añadir las propiedades calculadas que actúan como alias
+        if hasattr(self, 'hip'):
+            res['hip'] = self.hip
+        if hasattr(self, 'shoulder_width'):
+            res['shoulder_width'] = self.shoulder_width
+        return res
 
 
 class User(BaseModel):
-    """
-    Modelo que representa a un usuario del sistema.
-    """
-    
-    def __init__(self, email: str = None, name: str = None, gender: str = None,
-                 birth_date: str = None, height: float = None, weight: float = None):
-        """
-        Inicializa un nuevo usuario.
-        
-        Args:
-            email: Correo electrónico
-            name: Nombre completo
-            gender: Género (male, female, etc)
-            birth_date: Fecha de nacimiento
-            height: Altura en cm
-            weight: Peso en kg
-        """
+    """Modelo que representa a un usuario del sistema."""
+    def __init__(self, email: str = None, name: str = None, gender: str = "not_specified",
+                 birth_date: str = None, height: float = None, weight: float = None,
+                 username: str = None, first_name: str = None, last_name: str = None,
+                 profile_image: str = None):
         super().__init__()
         self.email = email
         self.password_hash = None
-        self.name = name
         self.gender = gender
         self.birth_date = birth_date
-        self.height = height
-        self.weight = weight
+        self.username = username or email
+        self.first_name = first_name or (name.split(' ', 1)[0] if name else None)
+        self.last_name = last_name or (name.split(' ', 1)[1] if name and ' ' in name else "")
+        self.profile_image = profile_image
         self.created_at = datetime.datetime.now().isoformat()
+        self.updated_at = datetime.datetime.now().isoformat()
         self.last_login = None
-    
+
+    @property
+    def name(self) -> str:
+        if self.first_name:
+            return f"{self.first_name} {self.last_name}".strip()
+        return self.username or ""
+
+    @name.setter
+    def name(self, value: str) -> None:
+        if value:
+            parts = value.split(' ', 1)
+            self.first_name = parts[0]
+            self.last_name = parts[1] if len(parts) > 1 else ""
+
     def set_password(self, password: str) -> None:
-        """
-        Establece la contraseña del usuario (hash).
-        En una implementación real usaríamos bcrypt o similar.
-        
-        Args:
-            password: Contraseña en texto plano
-        """
-        # Simulación simple de hash (NO usar en producción)
-        import hashlib
-        self.password_hash = hashlib.sha256(password.encode()).hexdigest()
-    
+        """Establece la contraseña cifrada usando Werkzeug."""
+        self.password_hash = generate_password_hash(password)
+
     def check_password(self, password: str) -> bool:
-        """
-        Verifica si la contraseña es correcta.
-        
-        Args:
-            password: Contraseña a verificar
-            
-        Returns:
-            True si la contraseña es correcta
-        """
-        import hashlib
-        return self.password_hash == hashlib.sha256(password.encode()).hexdigest()
-    
+        """Verifica la contraseña usando Werkzeug."""
+        if not self.password_hash:
+            return False
+        return check_password_hash(self.password_hash, password)
+
     def update_last_login(self) -> None:
-        """
-        Actualiza la fecha del último inicio de sesión.
-        """
         self.last_login = datetime.datetime.now().isoformat()
 
 
 class Measurement(BaseModel):
-    """
-    Modelo que representa las medidas corporales de un usuario.
-    """
-    
+    """Modelo que representa las medidas corporales del usuario."""
     def __init__(self, user_id: int = None):
-        """
-        Inicializa nuevas medidas corporales.
-        
-        Args:
-            user_id: ID del usuario asociado
-        """
         super().__init__()
         self.user_id = user_id
-        self.date = datetime.datetime.now().isoformat()
+        self.name = 'Mis medidas'
         self.height = None
         self.weight = None
         self.chest = None
         self.waist = None
-        self.hip = None
-        self.shoulder_width = None
+        self.hips = None
+        self.shoulders = None
         self.arm_length = None
         self.inseam = None
         self.neck = None
         self.thigh = None
-        self.raw_data = "{}"  # JSON con todos los datos
-    
+        self.additional_measurements = "{}"
+        self.front_image = None
+        self.side_image = None
+        self.landmarks = "{}"
+        self.is_current = 1
+        self.created_at = datetime.datetime.now().isoformat()
+        self.updated_at = datetime.datetime.now().isoformat()
+
+    # Propiedades para compatibilidad con código que usa los nombres antiguos (hip, shoulder_width, date, raw_data)
+    @property
+    def hip(self) -> Optional[float]:
+        return self.hips
+
+    @hip.setter
+    def hip(self, value: Optional[float]) -> None:
+        self.hips = value
+
+    @property
+    def shoulder_width(self) -> Optional[float]:
+        return self.shoulders
+
+    @shoulder_width.setter
+    def shoulder_width(self, value: Optional[float]) -> None:
+        self.shoulders = value
+
+    @property
+    def date(self) -> str:
+        return self.created_at
+
+    @date.setter
+    def date(self, value: str) -> None:
+        self.created_at = value
+
+    @property
+    def raw_data(self) -> str:
+        # Crea un JSON con los landmarks y medidas para compatibilidad
+        data = {
+            "landmarks": json.loads(self.landmarks) if isinstance(self.landmarks, str) and self.landmarks else {},
+            "measurements": {
+                "height": self.height,
+                "weight": self.weight,
+                "chest": self.chest,
+                "waist": self.waist,
+                "hip": self.hips,
+                "shoulder_width": self.shoulders,
+                "arm_length": self.arm_length,
+                "inseam": self.inseam,
+                "neck": self.neck,
+                "thigh": self.thigh
+            }
+        }
+        return json.dumps(data)
+
+    @raw_data.setter
+    def raw_data(self, value: str) -> None:
+        try:
+            data = json.loads(value)
+            if "landmarks" in data:
+                self.landmarks = json.dumps(data["landmarks"])
+            if "measurements" in data:
+                m = data["measurements"]
+                self.height = m.get("height", self.height)
+                self.weight = m.get("weight", self.weight)
+                self.chest = m.get("chest", self.chest)
+                self.waist = m.get("waist", self.waist)
+                self.hips = m.get("hip", self.hips)
+                self.shoulders = m.get("shoulder_width", self.shoulders)
+                self.arm_length = m.get("arm_length", self.arm_length)
+                self.inseam = m.get("inseam", self.inseam)
+                self.neck = m.get("neck", self.neck)
+                self.thigh = m.get("thigh", self.thigh)
+        except Exception:
+            pass
+
     def from_landmarks(self, landmarks: Dict[str, Dict[str, float]], measurements: Dict[str, float]) -> None:
-        """
-        Actualiza las medidas a partir de landmarks y cálculos.
-        
-        Args:
-            landmarks: Diccionario con landmarks detectados
-            measurements: Diccionario con medidas calculadas
-        """
+        """Actualiza las medidas a partir de landmarks y cálculos."""
         for key, value in measurements.items():
             if hasattr(self, key):
                 setattr(self, key, value)
+            elif key == 'hip':
+                self.hips = value
+            elif key == 'shoulder_width':
+                self.shoulders = value
         
-        # Guardar datos completos en raw_data
+        self.landmarks = json.dumps(landmarks)
         data = {
             "landmarks": landmarks,
             "measurements": measurements
         }
-        self.raw_data = json.dumps(data)
-    
-    def get_raw_data(self) -> Dict:
-        """
-        Obtiene los datos crudos como diccionario.
-        
-        Returns:
-            Diccionario con los datos crudos
-        """
-        try:
-            return json.loads(self.raw_data)
-        except:
-            return {}
+        self.additional_measurements = json.dumps(data)
 
 
 class ClothingItem(BaseModel):
-    """
-    Modelo que representa una prenda de ropa.
-    """
-    
+    """Modelo que representa una prenda de ropa."""
     def __init__(self, type: str = None, brand: str = None, name: str = None,
                  size: str = None, color: str = None, image_path: str = None):
-        """
-        Inicializa una nueva prenda.
-        
-        Args:
-            type: Tipo de prenda (shirt, pants, etc)
-            brand: Marca
-            name: Nombre del modelo
-            size: Talla
-            color: Color
-            image_path: Ruta a la imagen
-        """
         super().__init__()
         self.type = type
         self.brand = brand
@@ -405,111 +477,48 @@ class ClothingItem(BaseModel):
         self.size = size
         self.color = color
         self.image_path = image_path
-        self.metadata = "{}"  # JSON con datos adicionales
-    
-    def set_metadata(self, data: Dict) -> None:
-        """
-        Establece los metadatos de la prenda.
-        
-        Args:
-            data: Diccionario con metadatos
-        """
-        self.metadata = json.dumps(data)
-    
-    def get_metadata(self) -> Dict:
-        """
-        Obtiene los metadatos como diccionario.
-        
-        Returns:
-            Diccionario con metadatos
-        """
-        try:
-            return json.loads(self.metadata)
-        except:
-            return {}
+        self.metadata = "{}"
 
 
 class VirtualFitting(BaseModel):
-    """
-    Modelo que representa una prueba virtual de ropa.
-    """
-    
+    """Modelo que representa una prueba virtual de ropa."""
     def __init__(self, user_id: int = None, measurement_id: int = None):
-        """
-        Inicializa una nueva prueba virtual.
-        
-        Args:
-            user_id: ID del usuario
-            measurement_id: ID de las medidas usadas
-        """
         super().__init__()
         self.user_id = user_id
         self.measurement_id = measurement_id
         self.date = datetime.datetime.now().isoformat()
         self.result_image_path = None
-        self.clothing_items = "[]"  # JSON con IDs de prendas
-        self.fit_scores = "{}"  # JSON con puntuaciones de ajuste
+        self.clothing_items = "[]"
+        self.fit_scores = "{}"
         self.comments = None
-    
-    def set_clothing_items(self, items: List[int]) -> None:
-        """
-        Establece las prendas utilizadas en la prueba.
-        
-        Args:
-            items: Lista de IDs de prendas
-        """
-        self.clothing_items = json.dumps(items)
-    
-    def get_clothing_items(self) -> List[int]:
-        """
-        Obtiene los IDs de las prendas.
-        
-        Returns:
-            Lista de IDs de prendas
-        """
+
+    @property
+    def clothing_id(self) -> Optional[int]:
+        # Para compatibilidad con fitting_results
         try:
-            return json.loads(self.clothing_items)
-        except:
-            return []
-    
-    def set_fit_scores(self, scores: Dict[str, float]) -> None:
-        """
-        Establece las puntuaciones de ajuste.
-        
-        Args:
-            scores: Diccionario con puntuaciones
-        """
-        self.fit_scores = json.dumps(scores)
-    
-    def get_fit_scores(self) -> Dict[str, float]:
-        """
-        Obtiene las puntuaciones de ajuste.
-        
-        Returns:
-            Diccionario con puntuaciones
-        """
-        try:
-            return json.loads(self.fit_scores)
-        except:
-            return {}
+            items = json.loads(self.clothing_items)
+            return items[0] if items else None
+        except Exception:
+            return None
+
+    @clothing_id.setter
+    def clothing_id(self, value: Optional[int]) -> None:
+        if value is not None:
+            self.clothing_items = json.dumps([value])
+
+    @property
+    def preview_image(self) -> Optional[str]:
+        return self.result_image_path
+
+    @preview_image.setter
+    def preview_image(self, value: Optional[str]) -> None:
+        self.result_image_path = value
 
 
 class SizeRecommendation(BaseModel):
-    """
-    Modelo que representa una recomendación de talla.
-    """
-    
+    """Modelo que representa una recomendación de talla."""
     def __init__(self, user_id: int = None, measurement_id: int = None,
                  clothing_type: str = None, brand: str = None):
-        """
-        Inicializa una nueva recomendación de talla.
-        
-        Args:
-            user_id: ID del usuario
-            measurement_id: ID de las medidas usadas
-            clothing_type: Tipo de prenda
-            brand: Marca
-        """
         super().__init__()
         self.user_id = user_id
         self.measurement_id = measurement_id
@@ -517,26 +526,16 @@ class SizeRecommendation(BaseModel):
         self.brand = brand
         self.recommended_size = None
         self.fit_score = None
-        self.details = "{}"  # JSON con detalles
+        self.details = "{}"
         self.date = datetime.datetime.now().isoformat()
-    
-    def set_details(self, details: Dict) -> None:
-        """
-        Establece los detalles de la recomendación.
-        
-        Args:
-            details: Diccionario con detalles
-        """
-        self.details = json.dumps(details)
-    
-    def get_details(self) -> Dict:
-        """
-        Obtiene los detalles como diccionario.
-        
-        Returns:
-            Diccionario con detalles
-        """
-        try:
-            return json.loads(self.details)
-        except:
-            return {}
+
+
+# Wrapper y funciones globales para compatibilidad de app.py
+def init_db():
+    Database()
+
+class SessionWrapper:
+    def remove(self):
+        Database().close_connection()
+
+db_session = SessionWrapper()

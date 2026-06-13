@@ -9,11 +9,9 @@ import os
 import re
 import csv
 import datetime
-from typing import Dict, List, Tuple, Optional, Any, Union
+from typing import Dict, List, Tuple, Optional, Any
 import logging
 import uuid
-import math
-import numpy as np
 
 # Configurar logging
 logger = logging.getLogger(__name__)
@@ -65,7 +63,7 @@ def validate_measurements(measurements: Dict[str, float]) -> Tuple[bool, List[st
         "chest": (60, 160),      # 60cm - 160cm
         "waist": (50, 150),      # 50cm - 150cm
         "hip": (70, 170),        # 70cm - 170cm
-        "shoulder_width": (30, 60), # 30cm - 60cm
+        "shoulder_width": (30, 60),  # 30cm - 60cm
         "arm_length": (40, 90),  # 40cm - 90cm
         "inseam": (60, 110),     # 60cm - 110cm
         "neck": (25, 60),        # 25cm - 60cm
@@ -261,8 +259,6 @@ def extract_measurements_from_landmarks(landmarks: Dict[str, Dict[str, float]],
         measurements["shoulder_width"] = shoulder_width_px * scale_factor
     
     if "left_shoulder" in landmarks and "left_hip" in landmarks:
-        torso_height_px = abs(landmarks["left_shoulder"]["y"] - landmarks["left_hip"]["y"])
-        
         # Estimar contorno de pecho (aproximación muy básica)
         if "right_shoulder" in landmarks:
             chest_width_px = abs(landmarks["left_shoulder"]["x"] - landmarks["right_shoulder"]["x"])
@@ -271,7 +267,7 @@ def extract_measurements_from_landmarks(landmarks: Dict[str, Dict[str, float]],
         
         # Estimar cintura (aproximación)
         if "right_hip" in landmarks:
-            waist_y = landmarks["left_shoulder"]["y"] + torso_height_px * 0.4
+
             waist_width_px = abs(landmarks["left_hip"]["x"] - landmarks["right_hip"]["x"]) * 0.9
             waist_circumference_px = waist_width_px * 2.3  # Aproximación
             measurements["waist"] = waist_circumference_px * scale_factor
@@ -547,7 +543,7 @@ def anonymize_user_data(user_data: Dict[str, Any]) -> Dict[str, Any]:
                 age_group = "65+"
                 
             anon_data["age_group"] = age_group
-        except:
+        except Exception:
             pass
     
     # Generar un ID anónimo único

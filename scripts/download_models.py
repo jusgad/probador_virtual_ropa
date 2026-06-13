@@ -16,17 +16,16 @@ Opciones:
     --force         Sobrescribe modelos existentes
 """
 
-import os
 import sys
 import json
 import argparse
 import hashlib
-import shutil
 import zipfile
 import tarfile
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Dict, Optional
 import urllib.request
+import urllib.error
 import ssl
 
 # Intentar importar tqdm para barras de progreso
@@ -57,7 +56,7 @@ MODEL_SOURCES = {
         },
         {
             "name": "PoseNet",
-            "filename": "pose_estimation_model.pb",
+            "filename": "pose_estimation_model.tflite",
             "url": "https://tfhub.dev/google/lite-model/movenet/singlepose/lightning/tflite/float16/4?lite-format=tflite",
             "md5": None,
             "description": "MoveNet Lightning, modelo ligero para estimación de pose humana"
@@ -66,7 +65,7 @@ MODEL_SOURCES = {
     "segmentation": [
         {
             "name": "Human Segmentation",
-            "filename": "human_segmentation.pb",
+            "filename": "human_segmentation.tflite",
             "url": "https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float16/latest/selfie_segmenter.tflite",
             "md5": None,
             "description": "Modelo de segmentación de personas (selfie segmenter de MediaPipe)"
@@ -93,7 +92,7 @@ MODEL_CONFIGS = {
                 "output_segmentation_masks": False
             },
             "posenet": {
-                "model_path": "pose_estimation_model.pb",
+                "model_path": "pose_estimation_model.tflite",
                 "input_size": [192, 192],
                 "output_stride": 16
             }
@@ -103,7 +102,7 @@ MODEL_CONFIGS = {
         "config_file": "segmentation_config.json",
         "config": {
             "human_segmentation": {
-                "model_path": "human_segmentation.pb",
+                "model_path": "human_segmentation.tflite",
                 "input_size": [256, 256],
                 "iou_threshold": 0.3
             },
@@ -210,12 +209,25 @@ def download_file(url: str, dest_path: Path, force: bool = False) -> bool:
     
     print(f"Descargando {url} a {dest_path}...")
     
-    # Para manejar certificados SSL en algunos entornos
-    ssl_context = ssl._create_unverified_context()
+    try:
+        # Intentar con validación SSL por defecto primero
+        ssl_context = ssl.create_default_context()
+        response = urllib.request.urlopen(url, context=ssl_context)
+    except urllib.error.HTTPError as http_err:
+        print(f"Error HTTP al descargar {url}: {http_err.code} - {http_err.reason}")
+        return False
+    except Exception as ssl_err:
+        # Fallback a contexto no verificado si la validación SSL falla en el entorno local
+        print(f"Advertencia: Falló verificación SSL ({ssl_err}), intentando sin verificación...")
+        try:
+            ssl_context = ssl._create_unverified_context()
+            response = urllib.request.urlopen(url, context=ssl_context)
+        except Exception as err:
+            print(f"Error de red al descargar {url}: {err}")
+            return False
     
     try:
-        # Abrir conexión y obtener tamaño del archivo
-        with urllib.request.urlopen(url, context=ssl_context) as response:
+        with response:
             file_size = int(response.info().get('Content-Length', 0))
             
             # Iniciar barra de progreso

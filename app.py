@@ -7,21 +7,29 @@ en fotos o webcam.
 
 import os
 import cv2
-import numpy as np
+
 import argparse
 import logging
 import json
-from pathlib import Path
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+import uuid
+
+from flask import Flask, render_template, request, jsonify, redirect, url_for, send_from_directory
+from werkzeug.utils import secure_filename
+
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Importar componentes del sistema
 from core.body_detector import BodyDetector
 from core.measurement import MeasurementCalculator
 from core.clothing_fitter import ClothingFitter
 from core.size_recommender import SizeRecommender
-from database.db import init_db, db_session
+from database.db import init_db, db_session, VirtualFitting
 from database.repositories import save_measurement, get_user_measurements
-from utils.image_utils import load_image, save_image
+
 
 # Configuración de logging
 logging.basicConfig(
@@ -61,15 +69,20 @@ os.makedirs('data/users', exist_ok=True)
 os.makedirs('data/clothes/shirts', exist_ok=True)
 os.makedirs('data/clothes/pants', exist_ok=True)
 
-@app.before_first_request
-def initialize():
-    """Inicializa la base de datos antes de la primera petición."""
-    init_db()
+# Inicializar base de datos al arrancar
+init_db()
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
     """Cierra la sesión de base de datos al finalizar cada petición."""
     db_session.remove()
+
+@app.after_request
+def add_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
+    response.headers['Access-Control-Allow-Methods'] = 'GET,PUT,POST,DELETE,OPTIONS'
+    return response
 
 @app.route('/')
 def index():
@@ -83,15 +96,22 @@ def measure():
         # Procesar medición desde formulario o cámara
         if 'file' in request.files:
             file = request.files['file']
-            if file.filename != '':
-                # Guardar imagen subida temporalmente
-                img_path = 'static/uploads/temp.jpg'
+            if file and file.filename != '' and allowed_file(file.filename):
+                # Guardar imagen subida temporalmente con UUID (seguridad)
+                ext = file.filename.rsplit('.', 1)[1].lower()
+                unique_filename = f"{uuid.uuid4().hex}.{ext}"
+                img_path = os.path.join('static', 'uploads', unique_filename)
+                
                 os.makedirs(os.path.dirname(img_path), exist_ok=True)
                 file.save(img_path)
                 
                 # Procesar imagen
                 img = cv2.imread(img_path)
+                if img is None:
+                    return render_template('measurement.html', mode='upload', error="Imagen no válida o corrupta.")
                 return process_image(img, img_path)
+            elif file.filename != '':
+                return render_template('measurement.html', mode='upload', error="Tipo de archivo no permitido. Solo subir JPG o PNG.")
         
         # Si no hay archivo pero es POST, asumir webcam
         return render_template('measurement.html', mode='webcam')
@@ -104,14 +124,29 @@ def measure_webcam():
     """API para procesar imágenes de webcam."""
     if 'image' in request.files:
         file = request.files['image']
-        img_path = 'static/uploads/webcam.jpg'
-        os.makedirs(os.path.dirname(img_path), exist_ok=True)
-        file.save(img_path)
+        # La webcam de jscript tipicamente no manda extension valida, usamos un hack si es webcam.jpg
+        # pero es mas seguro aser un fallback a 'jpg'
+        filename = file.filename if file.filename else "webcam.jpg"
         
-        # Procesar imagen
-        img = cv2.imread(img_path)
-        result = process_image(img, img_path, return_json=True)
-        return jsonify(result)
+        if file and (allowed_file(filename) or filename == 'webcam.jpg'):
+            ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else 'jpg'
+            if ext not in ALLOWED_EXTENSIONS: ext = 'jpg'
+            
+            unique_filename = f"{uuid.uuid4().hex}.{ext}"
+            img_path = os.path.join('static', 'uploads', unique_filename)
+            
+            os.makedirs(os.path.dirname(img_path), exist_ok=True)
+            file.save(img_path)
+            
+            # Procesar imagen
+            img = cv2.imread(img_path)
+            if img is None:
+                return jsonify({"error": "Imagen no válida o corrupta"}), 400
+                
+            result = process_image(img, img_path, return_json=True)
+            return jsonify(result)
+        else:
+             return jsonify({"error": "Tipo de archivo no permitido"}), 400
     
     return jsonify({"error": "No image received"}), 400
 
@@ -124,8 +159,9 @@ def results(measurement_id):
         return redirect(url_for('index'))
     
     # Obtener recomendaciones de talla
-    shirt_size = size_recommender.recommend_size('shirt', measurement)
-    pants_size = size_recommender.recommend_size('pants', measurement)
+    m_dict = measurement.to_dict() if measurement else {}
+    shirt_size = size_recommender.recommend_size(m_dict, brand='Generic', clothing_type='shirts')
+    pants_size = size_recommender.recommend_size(m_dict, brand='Generic', clothing_type='pants')
     
     return render_template(
         'results.html',
@@ -133,6 +169,119 @@ def results(measurement_id):
         shirt_size=shirt_size,
         pants_size=pants_size
     )
+
+# Nuevas rutas de API y SPA
+@app.route('/_next/<path:path>')
+def send_next_assets(path):
+    """Sirve los archivos estáticos de Next.js."""
+    return send_from_directory(os.path.join('static', '_next'), path)
+
+@app.route('/templates/<filename>')
+def serve_template(filename):
+    """Sirve las vistas HTML dinámicamente para el enrutador SPA."""
+    if not filename.endswith('.html'):
+        filename += '.html'
+    return render_template(filename)
+
+@app.route('/data/references/size_charts/<filename>')
+def serve_size_chart(filename):
+    """Sirve las tablas de tallas JSON al frontend."""
+    return send_from_directory(os.path.join('data', 'references', 'size_charts'), filename)
+
+@app.route('/api/config')
+def api_config():
+    """Retorna la configuración del sistema."""
+    return jsonify(config)
+
+@app.route('/api/auth/check')
+def api_auth_check():
+    """Simula verificación de autenticación para el usuario por defecto."""
+    return jsonify({
+        "authenticated": True,
+        "user": {
+            "id": 1,
+            "username": "usuario_prueba",
+            "name": "Usuario de Prueba",
+            "email": "usuario@ejemplo.com"
+        }
+    })
+
+@app.route('/api/measurements/user/<int:user_id>')
+def api_measurements_user(user_id):
+    """Retorna la medición más reciente para un usuario."""
+    from database.repositories import MeasurementRepository
+    m = MeasurementRepository().get_latest_for_user(user_id)
+    if m:
+        return jsonify(m.to_dict())
+    return jsonify({"error": "No measurements found"}), 404
+
+@app.route('/api/clothing')
+def api_clothing():
+    """Retorna la lista de prendas disponibles."""
+    from database.repositories import ClothingRepository
+    clothing_list = ClothingRepository().get_all_for_api()
+    return jsonify(clothing_list)
+
+@app.route('/api/fitting/results', methods=['POST'])
+def api_fitting_results():
+    """Procesa el ajuste virtual y retorna puntuación y detalles."""
+    data = request.get_json() or {}
+    user_id = data.get("userId") or 1
+    clothing_id = data.get("clothingId")
+    measurements_data = data.get("measurements")
+    
+    if not clothing_id or not measurements_data:
+        return jsonify({"error": "Missing clothingId or measurements"}), 400
+        
+    from database.repositories import ClothingRepository, FittingRepository
+    clothing = ClothingRepository().get_by_id(clothing_id)
+    if not clothing:
+        return jsonify({"error": "Clothing item not found"}), 404
+        
+    # Obtener recomendación de talla
+    rec = size_recommender.recommend_size(measurements_data, brand=clothing.brand, clothing_type=clothing.type + 's')
+    
+    if "error" in rec:
+        recommended_size = "M"
+        fit_score = 85.0
+        fit_quality = "good"
+    else:
+        recommended_size = rec.get("recommended_size", "M")
+        fit_score = rec.get("fit_score", 0.85) * 100
+        fit_quality = rec.get("fit_quality", "good")
+
+    fit_descriptions = {
+        "perfect": "Ajuste perfecto a tu medida.",
+        "good": "Buen ajuste general.",
+        "acceptable": "Ajuste aceptable.",
+        "poor": "Se recomienda otra talla."
+    }
+    
+    result_image = clothing.image_path
+    
+    fitting_repo = FittingRepository()
+    fitting = VirtualFitting(user_id=user_id, measurement_id=measurements_data.get("id") or 1)
+    fitting.clothing_id = clothing_id
+    fitting.fit_scores = json.dumps(rec)
+    fitting.result_image_path = result_image
+    fitting_repo.create(fitting)
+    
+    user_chest = measurements_data.get("chest", 90.0)
+    garment_chest = user_chest + 2.0
+    
+    res = {
+        "previewImage": result_image,
+        "recommendedSize": recommended_size,
+        "fitDescription": fit_descriptions.get(fit_quality, "Buen ajuste general."),
+        "measurements": {
+            "chest": {
+                "user": round(user_chest, 1),
+                "garment": round(garment_chest, 1),
+                "difference": round(garment_chest - user_chest, 1)
+            }
+        }
+    }
+    return jsonify(res)
 
 def process_image(img, img_path, return_json=False):
     """
@@ -156,8 +305,9 @@ def process_image(img, img_path, return_json=False):
         # Visualizar medidas en la imagen
         result_img = measurement_calc.visualize_measurements(img.copy(), measurements)
         
-        # Guardar imagen con medidas
-        result_path = 'static/results/measured.jpg'
+        # Guardar imagen con medidas resolviendo RC (Race Condition)
+        base_name = os.path.basename(img_path)
+        result_path = os.path.join('static', 'results', f"measured_{base_name}")
         os.makedirs(os.path.dirname(result_path), exist_ok=True)
         cv2.imwrite(result_path, result_img)
         
@@ -241,13 +391,17 @@ def run_cli():
                             clothing_type = os.path.basename(args.clothing).split('_')[0]
                             
                             # Recomendar talla
-                            size = size_recommender.recommend_size(clothing_type, measurements)
+                            rec = size_recommender.recommend_size(measurements, brand='Generic', clothing_type='shirts' if clothing_type == 'shirt' else 'pants')
+                            size = rec.get("recommended_size", "M")
                             print(f"\nTalla recomendada para {clothing_type}: {size}")
                             
                             # Ajustar prenda al cuerpo
-                            fitted_img = clothing_fitter.fit_clothing(
-                                frame.copy(), clothing_img, body_landmarks, measurements
+                            clothing_id = os.path.splitext(os.path.basename(args.clothing))[0]
+                            fitted_img, success = clothing_fitter.fit_clothing_to_body(
+                                frame.copy(), body_landmarks, clothing_id
                             )
+                            if not success:
+                                fitted_img = frame.copy()
                             
                             # Mostrar resultado
                             cv2.imshow('Prueba Virtual', fitted_img)
@@ -297,13 +451,17 @@ def run_cli():
                     clothing_type = os.path.basename(args.clothing).split('_')[0]
                     
                     # Recomendar talla
-                    size = size_recommender.recommend_size(clothing_type, measurements)
+                    rec = size_recommender.recommend_size(measurements, brand='Generic', clothing_type='shirts' if clothing_type == 'shirt' else 'pants')
+                    size = rec.get("recommended_size", "M")
                     print(f"\nTalla recomendada para {clothing_type}: {size}")
                     
                     # Ajustar prenda al cuerpo
-                    fitted_img = clothing_fitter.fit_clothing(
-                        img.copy(), clothing_img, body_landmarks, measurements
+                    clothing_id = os.path.splitext(os.path.basename(args.clothing))[0]
+                    fitted_img, success = clothing_fitter.fit_clothing_to_body(
+                        img.copy(), body_landmarks, clothing_id
                     )
+                    if not success:
+                        fitted_img = img.copy()
                     
                     # Mostrar resultado
                     cv2.imshow('Prueba Virtual', fitted_img)

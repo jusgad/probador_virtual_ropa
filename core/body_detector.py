@@ -4,13 +4,16 @@ Utiliza modelos de visión por computadora para identificar y localizar
 las partes clave del cuerpo humano en imágenes.
 """
 
+import os
 import numpy as np
 import cv2
 import mediapipe as mp
 import tensorflow as tf
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, Tuple, Optional
+from mediapipe.tasks import python
+from mediapipe.tasks.python import vision
 
-from utils.image_utils import preprocess_image, resize_image
+from utils.image_utils import preprocess_image
 
 
 class BodyDetector:
@@ -35,13 +38,18 @@ class BodyDetector:
         else:
             self.device = tf.device('/CPU:0')
 
-        # Inicializar MediaPipe Pose
-        self.mp_pose = mp.solutions.pose
-        self.pose = self.mp_pose.Pose(
-            static_image_mode=True,
-            model_complexity=2,
-            min_detection_confidence=0.5
+        # Inicializar MediaPipe Pose usando la API moderna de Tasks
+        task_path = 'models/pose/mediapipe_pose_landmarker.task'
+        if not os.path.exists(task_path):
+            task_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'models', 'pose', 'mediapipe_pose_landmarker.task')
+            
+        base_options = python.BaseOptions(model_asset_path=task_path)
+        options = vision.PoseLandmarkerOptions(
+            base_options=base_options,
+            running_mode=vision.RunningMode.IMAGE,
+            output_segmentation_masks=False
         )
+        self.pose = vision.PoseLandmarker.create_from_options(options)
         
         # Opcionalmente, cargar un modelo personalizado
         try:
@@ -95,6 +103,10 @@ class BodyDetector:
             32: "right_foot_index"
         }
 
+    def detect_body(self, image: np.ndarray) -> Dict[str, Dict[str, float]]:
+        """Alias para el método detect para compatibilidad con app.py."""
+        return self.detect(image)
+
     def detect(self, image: np.ndarray) -> Dict[str, Dict[str, float]]:
         """
         Detecta los puntos de referencia del cuerpo en la imagen.
@@ -109,15 +121,17 @@ class BodyDetector:
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         height, width, _ = image.shape
         
-        # Detectar puntos de referencia usando MediaPipe
-        results = self.pose.process(image_rgb)
+        # Detectar puntos de referencia usando la API moderna de MediaPipe Tasks
+        mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=image_rgb)
+        results = self.pose.detect(mp_image)
         
         if not results.pose_landmarks:
             return {}
         
         # Convertir los resultados a un diccionario más manejable
         landmarks = {}
-        for idx, landmark in enumerate(results.pose_landmarks.landmark):
+        # Tomar el primer cuerpo detectado
+        for idx, landmark in enumerate(results.pose_landmarks[0]):
             if idx in self.landmark_names:
                 name = self.landmark_names[idx]
                 landmarks[name] = {

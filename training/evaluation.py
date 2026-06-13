@@ -6,20 +6,14 @@ modelos de detección de poses, segmentación de ropa y recomendación
 de tallas de manera individual o conjunta.
 """
 
-import os
 import json
 import numpy as np
-import pandas as pd
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
 import logging
 from datetime import datetime
-import joblib
-from sklearn.metrics import classification_report, confusion_matrix, mean_squared_error
-import cv2
-from tqdm import tqdm
 import argparse
 
 # Importar clases de entrenamiento para reutilizar funcionalidad

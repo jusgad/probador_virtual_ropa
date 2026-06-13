@@ -5,8 +5,7 @@ Proporciona funciones para manipular, transformar y combinar imágenes.
 
 import cv2
 import numpy as np
-from typing import Tuple, Optional, Union, List
-import math
+from typing import Tuple, Optional, List
 import os
 import logging
 
@@ -172,8 +171,8 @@ def overlay_images(background: np.ndarray, foreground: np.ndarray,
     # Aplicar mezcla de canal alfa
     for c in range(3):
         background[y:y+h, x:x+w, c] = (
-            background[y:y+h, x:x+w, c] * (1 - alpha[:, :, 0]) + 
-            foreground[y_offset:y_offset+h, x_offset:x_offset+w, c] * alpha[:, :, 0]
+            background[y:y+h, x:x+w, c] * (1 - alpha[:, :, 0])
+            + foreground[y_offset:y_offset+h, x_offset:x_offset+w, c] * alpha[:, :, 0]
         ).astype(np.uint8)
     
     # Actualizar también el canal alfa del fondo si es necesario
