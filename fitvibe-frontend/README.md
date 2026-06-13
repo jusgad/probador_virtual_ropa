@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Frontend FitVibe (Aplicación SPA en Next.js)
 
-## Getting Started
+Este directorio contiene el frontend de la plataforma **Probador Virtual de Ropa**, construido utilizando **Next.js 16**, **React 19**, **Tailwind CSS v4** y **Framer Motion**.
 
-First, run the development server:
+El frontend está estructurado como una Aplicación de Página Única (SPA) que se conecta con la API Flask local para el procesamiento de imágenes y la consulta del catálogo.
 
+---
+
+## 🛠️ Requisitos de Desarrollo
+
+Asegúrate de contar con:
+* **Node.js**: Versión 18.x o superior.
+* **npm**: Gestor de paquetes oficial (incluido con Node.js).
+
+---
+
+## 🚀 Comandos de Desarrollo
+
+Primero, instala todas las dependencias del proyecto:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 1. Iniciar Servidor de Desarrollo
+Para arrancar el frontend localmente con recarga en tiempo real:
+```bash
+npm run dev
+```
+La aplicación estará disponible en `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2. Compilar para Producción y Ofuscación
+Para compilar la aplicación, exportar las páginas estáticas y ejecutar la protección del código JavaScript:
+```bash
+npm run build
+```
+* **¿Qué sucede al ejecutar `npm run build`?**:
+  1. Ejecuta `next build`, el cual compila y exporta las vistas estáticas del frontend en el directorio `out/` (debido a la opción `output: 'export'` en `next.config.ts`).
+  2. Ejecuta `node obfuscate.js`, un script que toma todos los archivos `.js` generados en la carpeta `out/` y les aplica técnicas avanzadas de ofuscación mediante `javascript-obfuscator` para proteger el código de producción.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## ⚙️ Configuración y Enrutamiento en Flask
 
-To learn more about Next.js, take a look at the following resources:
+Dado que el servidor Flask (`app.py`) en la raíz del proyecto es el encargado de servir la aplicación completa en producción:
+* Los archivos compilados de Next.js se colocan en los directorios de archivos estáticos y plantillas del backend Flask para su despliegue final.
+* La ruta `/_next/<path:path>` en Flask sirve los archivos estáticos de la interfaz compilada.
+* Las peticiones dinámicas de vistas se sirven mediante `/templates/<filename>`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📚 Tecnologías del Frontend
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* **Framework**: [Next.js](https://nextjs.org/) (App Router).
+* **Estilos**: [Tailwind CSS v4](https://tailwindcss.com/) y animaciones fluidas con [Framer Motion](https://motion.dev/).
+* **Iconografía**: [Lucide React](https://lucide.dev/).
+* **Ofuscador**: [JavaScript Obfuscator](https://github.com/javascript-obfuscator/javascript-obfuscator).
